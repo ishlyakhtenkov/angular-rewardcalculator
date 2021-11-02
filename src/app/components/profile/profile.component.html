@@ -1,0 +1,159 @@
+<!-- User profile -->
+<div class="container mt-2">
+    <h2 class="text-secondary font-weight-bold">Profile</h2>
+    <div class="row flex-lg-nowrap">
+        <div class="col">
+            <div class="row">
+                <div class="col mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="e-profile">
+                                <div class="row">
+                                    <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
+                                        <div class="text-center text-sm-left mb-2 mb-sm-0">
+                                            <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{profile?.name}}</h4>
+                                        </div>
+                                        <div class="text-center text-sm-right">
+                                            <div class="text-muted"><small>Registered: {{profile?.registered |
+                                                    date:'mediumDate'}}</small></div>
+                                            <div class="text-muted"><small>Roles: {{ profile?.roles.join(', ')
+                                                    }}</small></div>
+                                            <div class="text-muted custom-checkbox"><small>
+                                                    <input name="active" type="checkbox" [checked]="profile?.enabled"
+                                                        class="custom-control-input">
+                                                    <label class="custom-control-label">Active</label></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-content pt-3">
+                                    <div class="tab-pane active">
+                                        <div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label>Name</label>
+                                                                <input type="text" readonly name="name"
+                                                                    [defaultValue]="profile?.name" required
+                                                                    class="form-control">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label>Email</label>
+                                                                <input type="text" readonly name="email"
+                                                                    [defaultValue]="profile?.email" required
+                                                                    class="form-control">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 mb-3">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="px-xl-3">
+                                <button (click)="logOut()" class="btn btn-block btn-secondary">
+                                    <span>Logout</span>
+                                    <i class="fas fa-sign-out-alt ml-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="px-xl-3">
+                                <button (click)="prepareChangePasswordFormGroup()" class="btn btn-block btn-danger"
+                                    data-toggle="modal" data-target="#changePasswordModal">
+                                    <span>Change password</span>
+                                    <i class="fas fa-key ml-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="px-xl-3">
+                                <button (click)="back()" class="btn btn-block btn-light">
+                                    <span>Close</span>
+                                    <i class="fas fa-times ml-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Change Password Modal Form -->
+<div class="modal draggable fade bd-example-modal-lg" id="changePasswordModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center">Change Password for {{ profile?.name }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-left">
+                <div>
+                    <form [formGroup]="changePasswordFormGroup" (ngSubmit)="onChangePassword()">
+                        <div formGroupName="changedPassword" class="text-left">
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <input formControlName="newPassword" type="password" autocomplete="new-password"
+                                    class="form-control" placeholder="New password">
+                                <div *ngIf="newPassword.invalid && (newPassword.dirty || newPassword.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="newPassword.errors.required || newPassword.errors.notOnlyWhitespace">
+                                        Password is required
+                                    </div>
+                                    <div *ngIf="newPassword.errors.minlength">
+                                        Password must be at least 5 characters long
+                                    </div>
+                                    <div *ngIf="newPassword.errors.maxlength">
+                                        Password must be no more than 32 characters long
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="repeatNewPassword">Repeat Password</label>
+                                <input formControlName="repeatNewPassword" type="password" autocomplete="new-password"
+                                    class="form-control" placeholder="Repeat new password">
+                                <div *ngIf="repeatNewPassword.invalid && (repeatNewPassword.dirty || repeatNewPassword.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div
+                                        *ngIf="repeatNewPassword.errors.required || repeatNewPassword.errors.notOnlyWhitespace">
+                                        Password is required
+                                    </div>
+                                    <div *ngIf="repeatNewPassword.errors.notEquivalent">
+                                        Passwords do not match
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-danger btn-block">Change Password</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                    id="change-password-modal-close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
