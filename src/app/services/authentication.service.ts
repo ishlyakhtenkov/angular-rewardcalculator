@@ -73,4 +73,28 @@ export class AuthenticationService {
       return false;
     }
   }
+
+  isPersonnelOfficer(): boolean {
+    if (this.isLoggedIn()) {
+      return this.getUserFromLocalCache().roles.includes('PERSONNEL_OFFICER');
+    } else {
+      return false;
+    }
+  }
+
+  isEconomist(): boolean {
+    if (this.isLoggedIn()) {
+      return this.getUserFromLocalCache().roles.includes('ECONOMIST');
+    } else {
+      return false;
+    }
+  }
+
+  isDepartmentHead(): boolean {
+    if (this.isLoggedIn()) {
+      return this.getUserFromLocalCache().roles.includes('DEPARTMENT_HEAD');
+    } else {
+      return false;
+    }
+  }
 }

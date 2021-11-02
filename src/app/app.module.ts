@@ -15,6 +15,10 @@ import { ProfileService } from './services/profile.service';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { AuthenticationGuard } from './guards/authentication.guard';
 import { HeaderComponent } from './components/header/header.component';
+import { AdminGuard } from './guards/admin.guard';
+import { AdminPersonnelOfficerEconomistGuard } from './guards/admin-personnel-officer-economist.guard';
+import { AdminEconomistDepartmentHeadGuard } from './guards/admin-economist-department-head.guard';
+import { AdminDepartmentHeadGuard } from './guards/admin-department-head.guard';
 
 const routes: Routes = [
   {path: 'profile', component: ProfileComponent, canActivate: [AuthenticationGuard]},
@@ -44,7 +48,8 @@ const routes: Routes = [
     NgbModule,
     FormsModule
   ],
-  providers: [AuthenticationService, NotificationService, ProfileService, {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
+  providers: [AuthenticationService, NotificationService, ProfileService, {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    AuthenticationGuard, AdminGuard, AdminPersonnelOfficerEconomistGuard, AdminEconomistDepartmentHeadGuard, AdminDepartmentHeadGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
