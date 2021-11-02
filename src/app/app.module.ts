@@ -13,6 +13,7 @@ import { NotificationService } from './services/notification.service';
 import { ProfileComponent } from './components/profile/profile.component';
 import { ProfileService } from './services/profile.service';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { AuthenticationGuard } from './guards/authentication.guard';
 
 const routes: Routes = [
   {path: 'profile', component: ProfileComponent, canActivate: [AuthenticationGuard]},
