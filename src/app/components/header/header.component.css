@@ -1,0 +1,5 @@
+.navbar-nav > li > .dropdown-menu { background-color: #343a40}
+
+.navbar-nav > li > .dropdown-menu a{   color: #f8f9fa  }
+
+.navbar-nav > li > .dropdown-menu a:hover{   color: #f8f9fa; background-color: grey  }

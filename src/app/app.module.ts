@@ -14,6 +14,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { ProfileService } from './services/profile.service';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { AuthenticationGuard } from './guards/authentication.guard';
+import { HeaderComponent } from './components/header/header.component';
 
 const routes: Routes = [
   {path: 'profile', component: ProfileComponent, canActivate: [AuthenticationGuard]},
@@ -31,7 +32,8 @@ const routes: Routes = [
   declarations: [
     AppComponent,
     LoginComponent,
-    ProfileComponent
+    ProfileComponent,
+    HeaderComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
