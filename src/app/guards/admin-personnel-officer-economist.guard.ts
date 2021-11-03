@@ -20,7 +20,7 @@ export class AdminPersonnelOfficerEconomistGuard implements CanActivate {
       if (this.authenticationService.isAdmin() || this.authenticationService.isPersonnelOfficer() || this.authenticationService.isEconomist()) {
         return true;
       } else {
-        // this.router.navigateByUrl("/albums");
+        this.router.navigateByUrl('/profile');
         this.notificationService.sendNotification(NotificationType.ERROR, 'You do not have enough permissions!');
         return false;
       }

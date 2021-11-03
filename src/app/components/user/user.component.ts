@@ -26,6 +26,8 @@ export class UserComponent implements OnInit {
   userEditFormGroup: FormGroup;
   editedUserName: string;
   changePasswordFormGroup: FormGroup;
+  rolesArray: string[] = ['ADMIN', 'ECONOMIST', 'DEPARTMENT_HEAD', 'PERSONNEL_OFFICER'];
+  rolesUpdated: string[] = ['ADMIN', 'ECONOMIST'];
 
   refreshing: boolean;
 
@@ -82,7 +84,7 @@ export class UserComponent implements OnInit {
     this.getDepartments();
     this.userAddFormGroup = this.formBuilder.group({
       user: this.formBuilder.group({
-        name: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(20), CustomValidators.notOnlyWhitespace]),
+        name: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace]),
         email: new FormControl('', [Validators.required, Validators.maxLength(40), Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]),
         enabled: [true],
         roles: new FormControl('', [Validators.required]),
@@ -152,7 +154,7 @@ export class UserComponent implements OnInit {
     this.userEditFormGroup = this.formBuilder.group({
       user: this.formBuilder.group({
         id: [''],
-        nameEdited: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(20), CustomValidators.notOnlyWhitespace]),
+        nameEdited: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace]),
         emailEdited: new FormControl('', [Validators.required, Validators.maxLength(40), Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]),
         enabledEdited: [true],
         rolesEdited: new FormControl('', [Validators.required]),
@@ -170,7 +172,7 @@ export class UserComponent implements OnInit {
         this.userEditFormGroup = this.formBuilder.group({
           user: this.formBuilder.group({
             id: [user.id],
-            nameEdited: new FormControl(user.name, [Validators.required, Validators.minLength(4), Validators.maxLength(20), CustomValidators.notOnlyWhitespace]),
+            nameEdited: new FormControl(user.name, [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace]),
             emailEdited: new FormControl(user.email, [Validators.required, Validators.maxLength(40), Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]),
             enabledEdited: [user.enabled],
             rolesEdited: new FormControl(user.roles, [Validators.required]),

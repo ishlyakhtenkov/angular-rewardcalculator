@@ -1,1 +1,3 @@
 @import '~angular-notifier/styles';
+
+@import "~@ng-select/ng-select/themes/default.theme.css";

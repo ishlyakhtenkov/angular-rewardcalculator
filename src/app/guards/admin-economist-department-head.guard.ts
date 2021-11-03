@@ -20,7 +20,7 @@ export class AdminEconomistDepartmentHeadGuard implements CanActivate {
       if (this.authenticationService.isAdmin() || this.authenticationService.isEconomist() || this.authenticationService.isDepartmentHead()) {
         return true;
       } else {
-        // this.router.navigateByUrl("/albums");
+        this.router.navigateByUrl('/profile');
         this.notificationService.sendNotification(NotificationType.ERROR, 'You do not have enough permissions!');
         return false;
       }

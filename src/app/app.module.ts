@@ -24,6 +24,7 @@ import { UserService } from './services/user.service';
 import { DepartmentService } from './services/department.service';
 import { ErrorHandlingService } from './services/error-handling.service';
 import { TestDataCheckingService } from './services/test-data-checking.service';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 const routes: Routes = [
   {path: 'profile', component: ProfileComponent, canActivate: [AuthenticationGuard]},
@@ -52,7 +53,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     NotificationModule,
     NgbModule,
-    FormsModule
+    FormsModule,
+    NgSelectModule
   ],
   providers: [AuthenticationService, NotificationService, ProfileService, {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     AuthenticationGuard, AdminGuard, AdminPersonnelOfficerEconomistGuard, AdminEconomistDepartmentHeadGuard, AdminDepartmentHeadGuard, 

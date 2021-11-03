@@ -124,12 +124,12 @@
                             </div>
                             <div class="form-group">
                                 <label for="roles">User Roles</label>
-                                <select multiple formControlName="roles" class="form-control" size="2">
-                                    <option value="ADMIN">ADMIN</option>
-                                    <option value="ECONOMIST">ECONOMIST</option>
-                                    <option value="DEPARTMENT_HEAD">DEPARTMENT HEAD</option>
-                                    <option value="PERSONNEL_OFFICER">PERSONNEL OFFICER</option>
-                                </select>
+                                <ng-select 
+                                    [items]="rolesArray" 
+                                    [multiple]="true" 
+                                    placeholder="Select roles" 
+                                    formControlName="roles">
+                                </ng-select>
                                 <div *ngIf="roles.invalid && (roles.dirty || roles.touched)"
                                     class="alert alert-danger mt-1">
                                     <div *ngIf="roles.errors.required">
@@ -139,11 +139,13 @@
                             </div>
                             <div class="form-group">
                                 <label for="managedDepartments">Managed Departments</label>
-                                <select multiple formControlName="managedDepartments" class="form-control" size="3">
-                                    <option *ngFor="let department of departments" [ngValue]="department">
-                                        {{ department.name }}
-                                    </option>
-                                </select>
+                                <ng-select 
+                                    [items]="departments" 
+                                    [multiple]="true" 
+                                    bindLabel="name"
+                                    placeholder="Select managed departments" 
+                                    formControlName="managedDepartments">
+                                </ng-select>
                             </div>
                             <div class="form-group">
                                 <label for="password">User Password</label>
@@ -252,12 +254,12 @@
                             </div>
                             <div class="form-group">
                                 <label for="rolesEdited">User Roles</label>
-                                <select multiple formControlName="rolesEdited" class="form-control" size="4">
-                                    <option value="ADMIN">ADMIN</option>
-                                    <option value="ECONOMIST">ECONOMIST</option>
-                                    <option value="DEPARTMENT_HEAD">DEPARTMENT HEAD</option>
-                                    <option value="PERSONNEL_OFFICER">PERSONNEL OFFICER</option>
-                                </select>
+                                <ng-select 
+                                    [items]="rolesArray" 
+                                    [multiple]="true" 
+                                    placeholder="Select roles"
+                                    formControlName="rolesEdited">
+                                </ng-select>
                                 <div *ngIf="rolesEdited.invalid && (rolesEdited.dirty || rolesEdited.touched)"
                                     class="alert alert-danger mt-1">
                                     <div *ngIf="rolesEdited.errors.required">
@@ -267,11 +269,13 @@
                             </div>
                             <div class="form-group">
                                 <label for="managedDepartmentsEdited">Managed Departments</label>
-                                <select multiple formControlName="managedDepartmentsEdited" class="form-control" size="3">
-                                    <option *ngFor="let department of departments" [ngValue]="department">
-                                        {{ department.name }}
-                                    </option>
-                                </select>
+                                <ng-select 
+                                    [items]="departments" 
+                                    [multiple]="true" 
+                                    bindLabel="name"
+                                    placeholder="Select managed departments" 
+                                    formControlName="managedDepartmentsEdited">
+                                </ng-select>
                             </div>
                             <div class="form-group">
                                 <div class="form-check">
