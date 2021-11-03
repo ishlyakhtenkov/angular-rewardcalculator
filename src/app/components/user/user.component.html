@@ -1,0 +1,362 @@
+<!-- Users Table -->
+<div class="container mt-2">
+    <div class="row mt-2">
+        <div class="col-6">
+            <h2 class="text-secondary font-weight-bold">Users</h2>
+        </div>
+        <div class="col-6 text-right">
+            <div class="btn-group">
+                <div class="form-inline">
+                    <input #inputkeyWord type="text" id="inputkeyWordField" placeholder="Search users..." class="form-control mr-sm-2"
+                        (keyup.enter)="searchUsers(inputkeyWord.value)">
+                </div>
+                <button type="button" (click)="makeUserAddFormGroup()" class="btn btn-info mr-2" data-toggle="modal"
+                    data-target="#addUserModal">
+                    <i class="fas fa-plus"></i> Add User
+                </button>
+            </div>
+            <div class="btn-group">
+                <button type="button" (click)="refresh()" class="btn btn-light">
+                    <i *ngIf="refreshing" class="fas fa-sync fa-spin"></i><i *ngIf="!refreshing"
+                        class="fas fa-sync"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <table *ngIf="users?.length > 0" class="table table-bordered">
+        <thead class="thead-dark">
+            <tr align="center">
+                <th>Name</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Status</th>
+                <th>Registered</th>
+                <th>Managed Departments</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let tempUser of users" align="center">
+                <td class="align-middle">{{ tempUser.name }}</td>
+                <td class="align-middle">{{ tempUser.email }}</td>
+                <td class="align-middle">
+                    <div *ngFor="let tempRole of tempUser.roles">
+                        {{ tempRole }}
+                    </div>
+                </td>
+                <td class="align-middle">
+                    <span [hidden]="!tempUser?.enabled" class="badge badge-success">Active</span>
+                    <span [hidden]="tempUser?.enabled" class="badge badge-danger">Inactive</span>
+                </td>
+                <td class="align-middle">{{ tempUser.registered | date:'mediumDate' }}</td>
+                <td class="align-middle">
+                    <div *ngFor="let tempDepartment of tempUser.managedDepartments">
+                        {{ tempDepartment.name }}
+                    </div>
+                </td>
+                <td class="align-middle">
+                    <button (click)="prepareUserEditFormGroup(tempUser)" class="btn btn-outline-info btn-sm"
+                        title="Update User" data-toggle="modal" data-target="#editUserModal">
+                        <i class="fa fa-pencil-alt" aria-hidden="true"></i>
+                    </button>
+                    <button (click)="deleteUser(tempUser.id, tempUser.name)" class="btn btn-outline-danger btn-sm ml-1"
+                        title="Delete User"><i class="fas fa-trash" aria-hidden="true"></i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- if users is empty then display a message -->
+    <div *ngIf="users?.length == 0" class="container">
+        <div class="row">
+            <h4 class="alert alert-warning col-md-12">No users found.</h4>
+        </div>
+    </div>
+</div>
+
+<!-- User Add Modal Form -->
+<div class="modal draggable fade bd-example-modal-lg" id="addUserModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center">New User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-left">
+                <div>
+                    <form [formGroup]="userAddFormGroup" (ngSubmit)="onAddNewUser()">
+                        <div formGroupName="user" class="text-left">
+                            <div class="form-group">
+                                <label for="name">User Name</label>
+                                <input formControlName="name" type="text" class="form-control" placeholder="User name">
+                                <div *ngIf="name.invalid && (name.dirty || name.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="name.errors.required || name.errors.notOnlyWhitespace">
+                                        Name is required
+                                    </div>
+                                    <div *ngIf="name.errors.minlength">
+                                        Name must be at least 4 characters long
+                                    </div>
+                                    <div *ngIf="name.errors.maxlength">
+                                        Name must be no more than 20 characters long
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">User email</label>
+                                <input formControlName="email" type="email" autocomplete="username" class="form-control"
+                                    placeholder="User email">
+                                <div *ngIf="email.invalid && (email.dirty || email.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="email.errors.required">
+                                        Email is required
+                                    </div>
+                                    <div *ngIf="email.errors.maxlength">
+                                        Email must be no more than 40 characters long
+                                    </div>
+                                    <div *ngIf="email.errors.pattern">
+                                        Must be email
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="roles">User Roles</label>
+                                <select multiple formControlName="roles" class="form-control" size="2">
+                                    <option value="ADMIN">ADMIN</option>
+                                    <option value="ECONOMIST">ECONOMIST</option>
+                                    <option value="DEPARTMENT_HEAD">DEPARTMENT HEAD</option>
+                                    <option value="PERSONNEL_OFFICER">PERSONNEL OFFICER</option>
+                                </select>
+                                <div *ngIf="roles.invalid && (roles.dirty || roles.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="roles.errors.required">
+                                        At least one role is required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="managedDepartments">Managed Departments</label>
+                                <select multiple formControlName="managedDepartments" class="form-control" size="3">
+                                    <option *ngFor="let department of departments" [ngValue]="department">
+                                        {{ department.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">User Password</label>
+                                <input formControlName="password" type="password" autocomplete="new-password"
+                                    class="form-control" placeholder="User password">
+                                <div *ngIf="password.invalid && (password.dirty || password.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="password.errors.required || password.errors.notOnlyWhitespace">
+                                        Password is required
+                                    </div>
+                                    <div *ngIf="password.errors.minlength">
+                                        Password must be at least 5 characters long
+                                    </div>
+                                    <div *ngIf="password.errors.maxlength">
+                                        Password must be no more than 32 characters long
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="repeatPassword">Repeat Password</label>
+                                <input formControlName="repeatPassword" type="password" autocomplete="new-password"
+                                    class="form-control" placeholder="Repeat password">
+                                <div *ngIf="repeatPassword.invalid && (repeatPassword.dirty || repeatPassword.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div
+                                        *ngIf="repeatPassword.errors.required || repeatPassword.errors.notOnlyWhitespace">
+                                        Password is required
+                                    </div>
+                                    <div *ngIf="repeatPassword.errors.notEquivalent">
+                                        Passwords do not match
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" formControlName="enabled" class="form-check-input">
+                                        Active
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-info btn-block">Save</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                    id="user-add-modal-close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- User Edit Modal Form -->
+<div class="modal draggable fade bd-example-modal-lg" id="editUserModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center">Edit User: {{ editedUserName }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-left">
+                <div>
+                    <form [formGroup]="userEditFormGroup" (ngSubmit)="onUpdateUser()">
+                        <div formGroupName="user" class="text-left">
+                            <div class="form-group">
+                                <input formControlName="id" type="hidden">
+                            </div>
+                            <div class="form-group">
+                                <label for="nameEdited">User Name</label>
+                                <input formControlName="nameEdited" type="text" class="form-control"
+                                    placeholder="User name">
+                                <div *ngIf="nameEdited.invalid && (nameEdited.dirty || nameEdited.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="nameEdited.errors.required || nameEdited.errors.notOnlyWhitespace">
+                                        Name is required
+                                    </div>
+                                    <div *ngIf="nameEdited.errors.minlength">
+                                        Name must be at least 4 characters long
+                                    </div>
+                                    <div *ngIf="nameEdited.errors.maxlength">
+                                        Name must be no more than 20 characters long
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="emailEdited">User email</label>
+                                <input formControlName="emailEdited" type="email" autocomplete="username"
+                                    class="form-control" placeholder="User email">
+                                <div *ngIf="emailEdited.invalid && (emailEdited.dirty || emailEdited.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="emailEdited.errors.required">
+                                        Email is required
+                                    </div>
+                                    <div *ngIf="emailEdited.errors.maxlength">
+                                        Email must be no more than 40 characters long
+                                    </div>
+                                    <div *ngIf="emailEdited.errors.pattern">
+                                        Must be email
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="rolesEdited">User Roles</label>
+                                <select multiple formControlName="rolesEdited" class="form-control" size="4">
+                                    <option value="ADMIN">ADMIN</option>
+                                    <option value="ECONOMIST">ECONOMIST</option>
+                                    <option value="DEPARTMENT_HEAD">DEPARTMENT HEAD</option>
+                                    <option value="PERSONNEL_OFFICER">PERSONNEL OFFICER</option>
+                                </select>
+                                <div *ngIf="rolesEdited.invalid && (rolesEdited.dirty || rolesEdited.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="rolesEdited.errors.required">
+                                        At least one role is required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="managedDepartmentsEdited">Managed Departments</label>
+                                <select multiple formControlName="managedDepartmentsEdited" class="form-control" size="3">
+                                    <option *ngFor="let department of departments" [ngValue]="department">
+                                        {{ department.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" formControlName="enabledEdited" class="form-check-input">
+                                        Active
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-info btn-block">Save</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" (click)="prepareChangePasswordFormGroup(id.value)" class="btn btn-danger"
+                    data-toggle="modal" data-target="#changePasswordModal">
+                    Change password
+                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                    id="user-edit-modal-close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Change Password Modal Form -->
+<div class="modal draggable fade bd-example-modal-lg" id="changePasswordModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center">Change Password for {{ editedUserName }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-left">
+                <div>
+                    <form [formGroup]="changePasswordFormGroup" (ngSubmit)="onChangePassword()">
+                        <div formGroupName="changedPassword" class="text-left">
+                            <div class="form-group">
+                                <input formControlName="changePasswordId" type="hidden">
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <input formControlName="newPassword" type="password" autocomplete="new-password"
+                                    class="form-control" placeholder="New password">
+                                <div *ngIf="newPassword.invalid && (newPassword.dirty || newPassword.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="newPassword.errors.required || newPassword.errors.notOnlyWhitespace">
+                                        Password is required
+                                    </div>
+                                    <div *ngIf="newPassword.errors.minlength">
+                                        Password must be at least 5 characters long
+                                    </div>
+                                    <div *ngIf="newPassword.errors.maxlength">
+                                        Password must be no more than 32 characters long
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="repeatNewPassword">Repeat Password</label>
+                                <input formControlName="repeatNewPassword" type="password" autocomplete="new-password"
+                                    class="form-control" placeholder="Repeat new password">
+                                <div *ngIf="repeatNewPassword.invalid && (repeatNewPassword.dirty || repeatNewPassword.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div
+                                        *ngIf="repeatNewPassword.errors.required || repeatNewPassword.errors.notOnlyWhitespace">
+                                        Password is required
+                                    </div>
+                                    <div *ngIf="repeatNewPassword.errors.notEquivalent">
+                                        Passwords do not match
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-danger btn-block">Change Password</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                    id="change-password-modal-close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

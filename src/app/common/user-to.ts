@@ -1,20 +1,19 @@
 import { Department } from "./department";
 
-export class User {
+export class UserTo {
     id: string;
     name: string;
     email: string;
     enabled: boolean;
-    registered: Date;
     roles: string[];
-    managedDepartments: Department[];
+    managedDepartmentsId: string[];
 
-    constructor(id: string, name: string, email: string, enabled: boolean, roles: string[], managedDepartments: Department[]) { 
+    constructor(id: string, name: string, email: string, enabled: boolean, roles: string[], managedDepartmentsId: string[]) { 
         this.id = id;
         this.name = name;
         this.email = email;
         this.enabled = enabled;
         this.roles = roles;
-        this.managedDepartments = managedDepartments;
+        this.managedDepartmentsId = managedDepartmentsId;
     }
 }
