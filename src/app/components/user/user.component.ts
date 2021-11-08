@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Department } from 'src/app/common/department';
 import { NewUserTo } from 'src/app/common/new-user-to';
@@ -12,6 +12,7 @@ import { NotificationService } from 'src/app/services/notification.service';
 import { TestDataCheckingService } from 'src/app/services/test-data-checking.service';
 import { UserService } from 'src/app/services/user.service';
 import { CustomValidators } from 'src/app/validators/custom-validators';
+import * as $ from "jquery";
 
 @Component({
   selector: 'app-user',
@@ -33,7 +34,7 @@ export class UserComponent implements OnInit {
 
   constructor(private userService: UserService, private departmentService: DepartmentService, private notificationService: NotificationService,
     private formBuilder: FormBuilder, private errorHandlingService: ErrorHandlingService, 
-    private testDataCheckingService: TestDataCheckingService) { }
+    private testDataCheckingService: TestDataCheckingService, private elementRef : ElementRef) { }
 
   ngOnInit(): void {
     this.listUsers();
@@ -156,7 +157,6 @@ export class UserComponent implements OnInit {
         id: [''],
         nameEdited: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace]),
         emailEdited: new FormControl('', [Validators.required, Validators.maxLength(40), Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]),
-        enabledEdited: [true],
         rolesEdited: new FormControl('', [Validators.required]),
         managedDepartmentsEdited: new FormControl('')
       })
@@ -174,7 +174,6 @@ export class UserComponent implements OnInit {
             id: [user.id],
             nameEdited: new FormControl(user.name, [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace]),
             emailEdited: new FormControl(user.email, [Validators.required, Validators.maxLength(40), Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]),
-            enabledEdited: [user.enabled],
             rolesEdited: new FormControl(user.roles, [Validators.required]),
             managedDepartmentsEdited: new FormControl(selectedDepartments)
       })
@@ -202,9 +201,9 @@ export class UserComponent implements OnInit {
     if (this.userEditFormGroup.invalid) {
       this.userEditFormGroup.markAllAsTouched();
     } else {
-      if (!this.testDataCheckingService.isTestUser(this.id.value, "Test user cannot be edited!")) {
+      if (!this.testDataCheckingService.checkTestUser(this.id.value, "Test user cannot be edited!")) {
         let managedDepartmentsId = this.getDepartmentsId(this.managedDepartmentsEdited.value);
-        let updatedUserTo = new UserTo(this.id.value, this.nameEdited.value, this.emailEdited.value, this.enabledEdited.value, this.rolesEdited.value, managedDepartmentsId);
+        let updatedUserTo = new UserTo(this.id.value, this.nameEdited.value, this.emailEdited.value, this.rolesEdited.value, managedDepartmentsId);
         this.userService.updateUser(updatedUserTo).subscribe(
           response => {
             document.getElementById("user-edit-modal-close").click();
@@ -222,7 +221,7 @@ export class UserComponent implements OnInit {
   deleteUser(id: string, name: string) {
     if (confirm(`Are you sure want to delete user '${name}'?`)) {
       let numId = +id;
-      if (!this.testDataCheckingService.isTestUser(numId, "Test user cannot be deleted!")) {
+      if (!this.testDataCheckingService.checkTestUser(numId, "Test user cannot be deleted!")) {
         this.userService.deleteUser(numId).subscribe(
           response => {
             this.notificationService.sendNotification(NotificationType.SUCCESS, `The user '${name}' was deleted`);
@@ -257,12 +256,30 @@ export class UserComponent implements OnInit {
     });
   }
 
+  changeUserStatus(user: User, event: any) {
+    let userStatus: boolean = event.target.checked;
+    let textStatus: string = userStatus ? 'enabled' : 'disabled';
+    if (!this.testDataCheckingService.checkTestUser(+user.id, "Test user's status cannot be changed")) {
+      this.userService.changeUserStatus(+user.id, userStatus).subscribe(
+        response => {        
+          this.notificationService.sendNotification(NotificationType.SUCCESS, `User '${user.name}' was ${textStatus}`);
+        },
+        (errorResponse: HttpErrorResponse) => {
+          $(document.getElementById(`${user.id}-checkbox`)).prop('checked', !userStatus);
+          this.errorHandlingService.handleErrorResponse(errorResponse);
+        }
+      );  
+    } else {
+      $(document.getElementById(`${user.id}-checkbox`)).prop('checked', !userStatus);
+    }
+  }
+
   onChangePassword() {
     if (this.changePasswordFormGroup.invalid) {
       this.changePasswordFormGroup.markAllAsTouched();
     } else {
       let userId = this.changePasswordFormGroup.get('changedPassword.changePasswordId').value;
-      if (!this.testDataCheckingService.isTestUser(userId, "Test user's password cannot be changed!")) {
+      if (!this.testDataCheckingService.checkTestUser(userId, "Test user's password cannot be changed!")) {
         let newPassword = this.newPassword.value;
         this.userService.changeUserPassword(userId, newPassword).subscribe(
           response => {
@@ -309,9 +326,6 @@ export class UserComponent implements OnInit {
   }
   get emailEdited() {
     return this.userEditFormGroup.get('user.emailEdited');
-  }
-  get enabledEdited() {
-    return this.userEditFormGroup.get('user.enabledEdited');
   }
   get rolesEdited() {
     return this.userEditFormGroup.get('user.rolesEdited');

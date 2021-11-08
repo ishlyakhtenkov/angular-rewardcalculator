@@ -29,7 +29,7 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Roles</th>
-                <th>Status</th>
+                <th>Enabled</th>
                 <th>Registered</th>
                 <th>Managed Departments</th>
                 <th>Actions</th>
@@ -45,8 +45,10 @@
                     </div>
                 </td>
                 <td class="align-middle">
-                    <span [hidden]="!tempUser?.enabled" class="badge badge-success">Active</span>
-                    <span [hidden]="tempUser?.enabled" class="badge badge-danger">Inactive</span>
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" [checked]="tempUser.enabled" id="{{ tempUser.id }}-checkbox" (change)="changeUserStatus(tempUser, $event)"/>
+                        <label class="custom-control-label" for="{{ tempUser.id }}-checkbox"></label>
+                    </div>
                 </td>
                 <td class="align-middle">{{ tempUser.registered | date:'mediumDate' }}</td>
                 <td class="align-middle">
@@ -180,11 +182,9 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" formControlName="enabled" class="form-check-input">
-                                        Active
-                                    </label>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" formControlName="enabled" class="custom-control-input" id="enabledSwitch"/>
+                                    <label class="custom-control-label" for="enabledSwitch">Enabled</label>
                                 </div>
                             </div>
                         </div>
@@ -276,14 +276,6 @@
                                     placeholder="Select managed departments" 
                                     formControlName="managedDepartmentsEdited">
                                 </ng-select>
-                            </div>
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" formControlName="enabledEdited" class="form-check-input">
-                                        Active
-                                    </label>
-                                </div>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-info btn-block">Save</button>

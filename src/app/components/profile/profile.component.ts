@@ -82,7 +82,7 @@ export class ProfileComponent implements OnInit {
     if (this.changePasswordFormGroup.invalid) {
       this.changePasswordFormGroup.markAllAsTouched();
     } else {
-      if (!this.testDataCheckingService.isTestUser(+this.profile.id, "Test profile password cannot be changed!")) {
+      if (!this.testDataCheckingService.checkTestUser(+this.profile.id, "Test profile password cannot be changed!")) {
         let newPassword = this.changePasswordFormGroup.get('changedPassword.newPassword').value;
         this.profileService.changePassword(newPassword).subscribe(
           response => {

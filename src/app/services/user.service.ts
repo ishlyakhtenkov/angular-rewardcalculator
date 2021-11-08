@@ -39,4 +39,9 @@ export class UserService {
     const passwordQueryParam = `?password=${newPassword}`;
     return this.httpClient.patch<any>(`${this.usersUrl}/${id}/password${passwordQueryParam}`, {});
   }
+
+  changeUserStatus(id: number, status: boolean): Observable<any> {
+    const statusQueryParam = `?enabled=${status}`;
+    return this.httpClient.patch<any>(`${this.usersUrl}/${id}${statusQueryParam}`, {});
+  }
 }
