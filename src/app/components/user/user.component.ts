@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Department } from 'src/app/common/department';
 import { NewUserTo } from 'src/app/common/new-user-to';
@@ -13,6 +13,8 @@ import { TestDataCheckingService } from 'src/app/services/test-data-checking.ser
 import { UserService } from 'src/app/services/user.service';
 import { CustomValidators } from 'src/app/validators/custom-validators';
 import * as $ from "jquery";
+import { Roles } from 'src/app/enums/roles.enum';
+import { Messages } from 'src/app/enums/messages.enum';
 
 @Component({
   selector: 'app-user',
@@ -27,14 +29,13 @@ export class UserComponent implements OnInit {
   userEditFormGroup: FormGroup;
   editedUserName: string;
   changePasswordFormGroup: FormGroup;
-  rolesArray: string[] = ['ADMIN', 'ECONOMIST', 'DEPARTMENT_HEAD', 'PERSONNEL_OFFICER'];
-  rolesUpdated: string[] = ['ADMIN', 'ECONOMIST'];
+  rolesArray: string[] = [Roles.ADMIN, Roles.ECONOMIST, Roles.PERSONNEL_OFFICER, Roles.DEPARTMENT_HEAD];
 
   refreshing: boolean;
 
   constructor(private userService: UserService, private departmentService: DepartmentService, private notificationService: NotificationService,
     private formBuilder: FormBuilder, private errorHandlingService: ErrorHandlingService, 
-    private testDataCheckingService: TestDataCheckingService, private elementRef : ElementRef) { }
+    private testDataCheckingService: TestDataCheckingService) { }
 
   ngOnInit(): void {
     this.listUsers();
@@ -86,7 +87,7 @@ export class UserComponent implements OnInit {
     this.userAddFormGroup = this.formBuilder.group({
       user: this.formBuilder.group({
         name: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace]),
-        email: new FormControl('', [Validators.required, Validators.maxLength(40), Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]),
+        email: new FormControl('', [Validators.required, Validators.maxLength(40), Validators.pattern(CustomValidators.emailValidationPattern)]),
         enabled: [true],
         roles: new FormControl('', [Validators.required]),
         managedDepartments: new FormControl(''),
@@ -133,7 +134,7 @@ export class UserComponent implements OnInit {
       this.userService.createUser(newUserTo).subscribe(
         (response: User) => {
           document.getElementById("user-add-modal-close").click();
-          this.notificationService.sendNotification(NotificationType.SUCCESS, `A new user '${response.name}' was created`);
+          this.notificationService.sendNotification(NotificationType.SUCCESS, `New user '${response.name}' was created`);
           this.listUsers();
         },
         (errorResponse: HttpErrorResponse) => {
@@ -156,7 +157,7 @@ export class UserComponent implements OnInit {
       user: this.formBuilder.group({
         id: [''],
         nameEdited: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace]),
-        emailEdited: new FormControl('', [Validators.required, Validators.maxLength(40), Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]),
+        emailEdited: new FormControl('', [Validators.required, Validators.maxLength(40), Validators.pattern(CustomValidators.emailValidationPattern)]),
         rolesEdited: new FormControl('', [Validators.required]),
         managedDepartmentsEdited: new FormControl('')
       })
@@ -173,7 +174,7 @@ export class UserComponent implements OnInit {
           user: this.formBuilder.group({
             id: [user.id],
             nameEdited: new FormControl(user.name, [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace]),
-            emailEdited: new FormControl(user.email, [Validators.required, Validators.maxLength(40), Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]),
+            emailEdited: new FormControl(user.email, [Validators.required, Validators.maxLength(40), Validators.pattern(CustomValidators.emailValidationPattern)]),
             rolesEdited: new FormControl(user.roles, [Validators.required]),
             managedDepartmentsEdited: new FormControl(selectedDepartments)
       })
@@ -201,7 +202,7 @@ export class UserComponent implements OnInit {
     if (this.userEditFormGroup.invalid) {
       this.userEditFormGroup.markAllAsTouched();
     } else {
-      if (!this.testDataCheckingService.checkTestUser(this.id.value, "Test user cannot be edited!")) {
+      if (!this.testDataCheckingService.checkTestUser(this.id.value, Messages.TEST_DATA_CANNOT_BE_CHANGED)) {
         let managedDepartmentsId = this.getDepartmentsId(this.managedDepartmentsEdited.value);
         let updatedUserTo = new UserTo(this.id.value, this.nameEdited.value, this.emailEdited.value, this.rolesEdited.value, managedDepartmentsId);
         this.userService.updateUser(updatedUserTo).subscribe(
@@ -221,7 +222,7 @@ export class UserComponent implements OnInit {
   deleteUser(id: string, name: string) {
     if (confirm(`Are you sure want to delete user '${name}'?`)) {
       let numId = +id;
-      if (!this.testDataCheckingService.checkTestUser(numId, "Test user cannot be deleted!")) {
+      if (!this.testDataCheckingService.checkTestUser(numId, Messages.TEST_DATA_CANNOT_BE_CHANGED)) {
         this.userService.deleteUser(numId).subscribe(
           response => {
             this.notificationService.sendNotification(NotificationType.SUCCESS, `The user '${name}' was deleted`);
@@ -258,11 +259,11 @@ export class UserComponent implements OnInit {
 
   changeUserStatus(user: User, event: any) {
     let userStatus: boolean = event.target.checked;
-    let textStatus: string = userStatus ? 'enabled' : 'disabled';
-    if (!this.testDataCheckingService.checkTestUser(+user.id, "Test user's status cannot be changed")) {
+    let userStatusText: string = userStatus ? 'enabled' : 'disabled';
+    if (!this.testDataCheckingService.checkTestUser(+user.id, Messages.TEST_DATA_CANNOT_BE_CHANGED)) {
       this.userService.changeUserStatus(+user.id, userStatus).subscribe(
         response => {        
-          this.notificationService.sendNotification(NotificationType.SUCCESS, `User '${user.name}' was ${textStatus}`);
+          this.notificationService.sendNotification(NotificationType.SUCCESS, `User '${user.name}' was ${userStatusText}`);
         },
         (errorResponse: HttpErrorResponse) => {
           $(document.getElementById(`${user.id}-checkbox`)).prop('checked', !userStatus);
@@ -284,7 +285,7 @@ export class UserComponent implements OnInit {
         this.userService.changeUserPassword(userId, newPassword).subscribe(
           response => {
             document.getElementById("change-password-modal-close").click();
-            this.notificationService.sendNotification(NotificationType.SUCCESS, `Password for ${this.nameEdited.value} was updated`);
+            this.notificationService.sendNotification(NotificationType.SUCCESS, `Password for '${this.nameEdited.value}' was updated`);
           },
           (errorResponse: HttpErrorResponse) => {
             this.errorHandlingService.handleErrorResponseWithButtonClick(errorResponse, "change-password-modal-close");

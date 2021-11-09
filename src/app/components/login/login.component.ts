@@ -16,8 +16,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   showLoading: boolean;
 
-  returnUrl: string;
-
   private subscriptions: Subscription[] = [];
 
   constructor(private router: Router, private authenticationService: AuthenticationService, private notificationService: NotificationService) { }

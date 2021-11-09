@@ -11,6 +11,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { CustomValidators } from 'src/app/validators/custom-validators';
 import { TestDataCheckingService } from 'src/app/services/test-data-checking.service';
 import { ErrorHandlingService } from 'src/app/services/error-handling.service';
+import { Messages } from 'src/app/enums/messages.enum';
 
 @Component({
   selector: 'app-profile',
@@ -82,12 +83,12 @@ export class ProfileComponent implements OnInit {
     if (this.changePasswordFormGroup.invalid) {
       this.changePasswordFormGroup.markAllAsTouched();
     } else {
-      if (!this.testDataCheckingService.checkTestUser(+this.profile.id, "Test profile password cannot be changed!")) {
+      if (!this.testDataCheckingService.checkTestUser(+this.profile.id, Messages.TEST_DATA_CANNOT_BE_CHANGED)) {
         let newPassword = this.changePasswordFormGroup.get('changedPassword.newPassword').value;
         this.profileService.changePassword(newPassword).subscribe(
           response => {
             document.getElementById("change-password-modal-close").click();
-            this.notificationService.sendNotification(NotificationType.SUCCESS, `Password has been changed`);
+            this.notificationService.sendNotification(NotificationType.SUCCESS, Messages.PASSWORD_CHANGED);
           },
           (errorResponse: HttpErrorResponse) => {
             this.errorHandlingService.handleErrorResponseWithButtonClick(errorResponse, "change-password-modal-close");
@@ -99,7 +100,7 @@ export class ProfileComponent implements OnInit {
 
   logOut(): void {
     this.authenticationService.logout();
-    this.notificationService.sendNotification(NotificationType.SUCCESS, 'You have been logged out');
+    this.notificationService.sendNotification(NotificationType.SUCCESS, Messages.LOGGED_OUT);
     this.router.navigateByUrl("/login");
   }
 
