@@ -22,6 +22,18 @@ export class HeaderComponent implements OnInit {
     return this.authenticationService.isAdmin();
   }
 
+  isAdminOrPersonnelOfficerOrEconomist(): boolean {
+    return (this.authenticationService.isAdmin() || this.authenticationService.isPersonnelOfficer() || this.authenticationService.isEconomist());
+  }
+
+  isAdminOrEconomistOrDepartmentHead(): boolean {
+    return (this.authenticationService.isAdmin() || this.authenticationService.isEconomist() || this.authenticationService.isDepartmentHead());
+  }
+
+  isAdminOrDepartmentHead(): boolean {
+    return (this.authenticationService.isAdmin() || this.authenticationService.isDepartmentHead());
+  }
+
   isLoginPage(): boolean {
    return this.router.url.includes('/login');
   }

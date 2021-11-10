@@ -11,36 +11,36 @@
 					<i class="fas fa-users"></i> Users
 				</a>
 			</li>
-			<li [hidden]="!isAdmin()" class="nav-item">
+			<li [hidden]="!isUserLoggedIn()" class="nav-item">
 				<a class="nav-link" routerLink="/paymentperiods">
 					<i class="fas fa-calendar-times"></i> Payment Periods
 				</a>
 			</li>
-			<li [hidden]="!isAdmin()" class="btn-group">
+			<li [hidden]="!isUserLoggedIn()" class="btn-group">
 				<a class="nav-link dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true">
 					<i class="fab fa-fort-awesome"></i> Organization
 				</a>
 				<div class="dropdown-menu">
-					<a [hidden]="!isAdmin()" class="dropdown-item" routerLink="/departments">
+					<a [hidden]="!isAdminOrPersonnelOfficerOrEconomist()" class="dropdown-item" routerLink="/departments">
 						<i class="fas fa-briefcase"></i> Departments
 					</a>
-					<a [hidden]="!isAdmin()" class="dropdown-item" routerLink="/positions">
+					<a class="dropdown-item" routerLink="/positions">
 						<i class="fas fa-chess"></i> Positions
 					</a>
-					<a [hidden]="!isAdmin()" class="dropdown-item" routerLink="/employees">
+					<a class="dropdown-item" routerLink="/employees">
 						<i class="fas fa-user-tie"></i> Employees
 					</a>
 				</div>
 			</li>
-			<li [hidden]="!isAdmin()" class="btn-group">
+			<li [hidden]="!isAdminOrEconomistOrDepartmentHead()" class="btn-group">
 				<a class="nav-link dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true">
 					<i class="fas fa-dollar-sign"></i> Rewards
 				</a>
 				<div class="dropdown-menu">
-					<a [hidden]="!isAdmin()" class="dropdown-item" routerLink="/departmentrewards">
+					<a [hidden]="!isAdminOrEconomistOrDepartmentHead()" class="dropdown-item" routerLink="/departmentrewards">
 						<i class="fas fa-file-invoice-dollar"></i> Department Rewards
 					</a>
-					<a [hidden]="!isAdmin()" class="dropdown-item" routerLink="/employeerewards">
+					<a [hidden]="!isAdminOrDepartmentHead()" class="dropdown-item" routerLink="/employeerewards">
 						<i class="fas fa-coins"></i> Employee Rewards
 					</a>
 				</div>

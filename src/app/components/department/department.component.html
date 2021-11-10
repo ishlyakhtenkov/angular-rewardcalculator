@@ -1,0 +1,170 @@
+<!-- Departments Table -->
+<div class="container mt-2">
+    <div class="row mt-2">
+        <div class="col-6">
+            <h2 class="text-secondary font-weight-bold">Departments</h2>
+        </div>
+        <div class="col-6 text-right">
+            <div class="btn-group">
+                <button [hidden]="!isAdminOrPersonnelOfficer()" type="button" (click)="makeDepartmentAddFormGroup()" class="btn btn-info mr-2"
+                    data-toggle="modal" data-target="#addDepartmentModal">
+                    <i class="fas fa-plus"></i> Add Department
+                </button>
+            </div>
+            <div class="btn-group">
+                <button type="button" (click)="refresh()" class="btn btn-light">
+                    <i *ngIf="refreshing" class="fas fa-sync fa-spin"></i><i *ngIf="!refreshing"
+                        class="fas fa-sync"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <table *ngIf="departments?.length > 0" class="table">
+        <thead class="thead-dark">
+            <tr align="center">
+                <th>Name</th>
+                <th [hidden]="!isAdminOrPersonnelOfficer()">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let tempDepartment of departments" align="center">
+                <td class="align-middle">{{ tempDepartment.name }}</td>
+                <td class="align-middle" [hidden]="!isAdminOrPersonnelOfficer()">
+                    <button (click)="prepareDepartmentEditFormGroup(tempDepartment)" class="btn btn-outline-info btn-sm"
+                        title="Update Department" data-toggle="modal" data-target="#editDepartmentModal">
+                        <i class="fa fa-pencil-alt" aria-hidden="true"></i>
+                    </button>
+                    <button (click)="deleteDepartment(tempDepartment.id, tempDepartment.name)"
+                        class="btn btn-outline-danger btn-sm ml-1" title="Delete Department"><i class="fas fa-trash"
+                            aria-hidden="true"></i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- if departments is empty then display a message -->
+    <div *ngIf="departments?.length == 0" class="container">
+        <div class="row">
+            <h4 class="alert alert-warning col-md-12">No departments found.</h4>
+        </div>
+    </div>
+
+    <!-- Pagination Area -->
+    <div class="footer-pagination">
+        <div class="row mt-3">
+            <div class="col-md-4"></div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-9" style="padding-left: 30%">
+                        <ngb-pagination [(page)]="pageNumber" [pageSize]="pageSize" [collectionSize]="totalElements"
+                            [maxSize]="5" [boundaryLinks]="false" (pageChange)="listDepartments()">
+                        </ngb-pagination>
+                    </div>
+
+                    <div class="col-md-3 mt-2 text-right">
+                        <span class="mr-2">Page Size</span>
+                        <select (change)="updatePageSize($event.target.value)">
+                            <option selected="true">5</option>
+                            <option>10</option>
+                            <option>20</option>
+                            <option>50</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Department Add Modal Form -->
+<div class="modal draggable fade bd-example-modal-lg" id="addDepartmentModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center">New Department</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-left">
+                <div>
+                    <form [formGroup]="departmentAddFormGroup" (ngSubmit)="onAddNewDepartment()">
+                        <div formGroupName="department" class="text-left">
+                            <div class="form-group">
+                                <label for="name">Department Name</label>
+                                <input formControlName="name" type="text" class="form-control"
+                                    placeholder="Department name">
+                                <div *ngIf="name.invalid && (name.dirty || name.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="name.errors.required || name.errors.notOnlyWhitespace">
+                                        Name is required
+                                    </div>
+                                    <div *ngIf="name.errors.minlength">
+                                        Name must be at least 4 characters long
+                                    </div>
+                                    <div *ngIf="name.errors.maxlength">
+                                        Name must be no more than 50 characters long
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-info btn-block">Save</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                    id="department-add-modal-close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Department Edit Modal Form -->
+<div class="modal draggable fade bd-example-modal-lg" id="editDepartmentModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center">Edit Department: {{ editedDepartmentName }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-left">
+                <div>
+                    <form [formGroup]="departmentEditFormGroup" (ngSubmit)="onUpdateDepartment()">
+                        <div formGroupName="department" class="text-left">
+                            <div class="form-group">
+                                <input formControlName="id" type="hidden">
+                            </div>
+                            <div class="form-group">
+                                <label for="nameEdited">Department Name</label>
+                                <input formControlName="nameEdited" type="text" class="form-control"
+                                    placeholder="Department name">
+                                <div *ngIf="nameEdited.invalid && (nameEdited.dirty || nameEdited.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="nameEdited.errors.required || nameEdited.errors.notOnlyWhitespace">
+                                        Name is required
+                                    </div>
+                                    <div *ngIf="nameEdited.errors.minlength">
+                                        Name must be at least 4 characters long
+                                    </div>
+                                    <div *ngIf="nameEdited.errors.maxlength">
+                                        Name must be no more than 50 characters long
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-info btn-block">Save</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                    id="department-edit-modal-close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

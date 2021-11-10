@@ -27,15 +27,15 @@ import { TestDataCheckingService } from './services/test-data-checking.service';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { PaymentPeriodService } from './services/payment-period.service';
 import { PaymentPeriodComponent } from './components/payment-period/payment-period.component';
+import { DepartmentComponent } from './components/department/department.component';
 
 const routes: Routes = [
   {path: 'profile', component: ProfileComponent, canActivate: [AuthenticationGuard]},
   {path: 'login', component: LoginComponent},
-  // {path: 'departments', component: DepartmentComponent, canActivate: [AdminGuard]},
   // {path: 'employees', component: EmployeeComponent, canActivate: [AuthenticationGuard]},
-  // {path: 'albums', component: AlbumComponent},
   {path: 'users', component: UserComponent, canActivate: [AdminGuard]},
   {path: 'paymentperiods', component: PaymentPeriodComponent, canActivate: [AuthenticationGuard]},
+  {path: 'departments', component: DepartmentComponent, canActivate: [AdminPersonnelOfficerEconomistGuard]},
   {path: '', redirectTo: '/login', pathMatch: 'full'},
   {path: '**', redirectTo: '/login', pathMatch: 'full'}
 ];
@@ -48,7 +48,8 @@ const routes: Routes = [
     ProfileComponent,
     HeaderComponent,
     UserComponent,
-    PaymentPeriodComponent
+    PaymentPeriodComponent,
+    DepartmentComponent
   ],
   imports: [
     RouterModule.forRoot(routes),

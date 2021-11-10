@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { PaymentPeriod } from 'src/app/common/payment-period';
 import { NotificationType } from 'src/app/enums/notification-type.enum';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ErrorHandlingService } from 'src/app/services/error-handling.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { PaymentPeriodService } from 'src/app/services/payment-period.service';
@@ -29,7 +30,7 @@ export class PaymentPeriodComponent implements OnInit {
   totalElements: number = 0;  
 
   constructor(private paymentPeriodService: PaymentPeriodService, private notificationService: NotificationService,
-    private formBuilder: FormBuilder, private errorHandlingService: ErrorHandlingService) { }
+    private formBuilder: FormBuilder, private errorHandlingService: ErrorHandlingService, private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {
     this.listPaymentPeriods();
@@ -82,7 +83,7 @@ export class PaymentPeriodComponent implements OnInit {
       this.paymentPeriodService.createPaymentPeriod(newPaymentPeriod).subscribe(
         (response: PaymentPeriod) => {
           document.getElementById("paymentPeriod-add-modal-close").click();
-          this.notificationService.sendNotification(NotificationType.SUCCESS, `A new payment period '${this.formatPaymentPeriodDate(response.period)}' was created`);
+          this.notificationService.sendNotification(NotificationType.SUCCESS, `New payment period '${this.formatPaymentPeriodDate(response.period)}' was created`);
           this.listPaymentPeriods();
         },
         (errorResponse: HttpErrorResponse) => {
@@ -135,6 +136,16 @@ export class PaymentPeriodComponent implements OnInit {
         }
       );
     }
+  }
+
+  isAdminOrEconomist(): boolean {
+    return (this.authenticationService.isAdmin() || this.authenticationService.isEconomist());
+  }
+
+  refresh() {
+    this.refreshing = true;
+    this.pageNumber = 1;
+    this.listPaymentPeriods();
   }
 
   updatePageSize(pageSize: number) {
