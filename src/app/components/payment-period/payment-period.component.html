@@ -1,0 +1,189 @@
+<!-- Payment Periods Table -->
+<div class="container mt-2">
+    <div class="row mt-2">
+        <div class="col-6">
+            <h2 class="text-secondary font-weight-bold">Payment Periods</h2>
+        </div>
+        <div class="col-6 text-right">
+            <div class="btn-group">
+                <button type="button" (click)="makePaymentPeriodAddFormGroup()" class="btn btn-info mr-2"
+                    data-toggle="modal" data-target="#addPaymentPeriodModal">
+                    <i class="fas fa-plus"></i> Add Payment Period
+                </button>
+            </div>
+            <div class="btn-group">
+                <button type="button" (click)="listPaymentPeriods()" class="btn btn-light">
+                    <i *ngIf="refreshing" class="fas fa-sync fa-spin"></i><i *ngIf="!refreshing"
+                        class="fas fa-sync"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <table *ngIf="paymentPeriods?.length > 0" class="table">
+        <thead class="thead-dark">
+            <tr align="center">
+                <th>Period</th>
+                <th>Required hours worked</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let tempPaymentPeriod of paymentPeriods" align="center">
+                <td class="align-middle">{{ tempPaymentPeriod.period | date:'MMMM yyyy'}}</td>
+                <td class="align-middle">{{ tempPaymentPeriod.requiredHoursWorked }}</td>
+                <td class="align-middle">
+                    <button (click)="preparePaymentPeriodEditFormGroup(tempPaymentPeriod)" class="btn btn-outline-info btn-sm"
+                        title="Update Payment Period" data-toggle="modal" data-target="#editPaymentPeriodModal">
+                        <i class="fa fa-pencil-alt" aria-hidden="true"></i>
+                    </button>
+                    <button (click)="deletePaymentPeriod(tempPaymentPeriod.id, tempPaymentPeriod.period)"
+                        class="btn btn-outline-danger btn-sm ml-1" title="Delete Payment Period"><i class="fas fa-trash"
+                            aria-hidden="true"></i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- if payment periods is empty then display a message -->
+    <div *ngIf="paymentPeriods?.length == 0" class="container">
+        <div class="row">
+            <h4 class="alert alert-warning col-md-12">No payment periods found.</h4>
+        </div>
+    </div>
+
+    <!-- Pagination Area -->
+    <div class="footer-pagination">
+        <div class="row mt-3">
+            <div class="col-md-4"></div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-9" style="padding-left: 30%">
+                        <ngb-pagination [(page)]="pageNumber" [pageSize]="pageSize" [collectionSize]="totalElements"
+                            [maxSize]="5" [boundaryLinks]="false" (pageChange)="listPaymentPeriods()">
+                        </ngb-pagination>
+                    </div>
+
+                    <div class="col-md-3 mt-2 text-right">
+                        <span class="mr-2">Page Size</span>
+                        <select (change)="updatePageSize($event.target.value)">
+                            <option selected="true">5</option>
+                            <option>10</option>
+                            <option>20</option>
+                            <option>50</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PaymentPeriod Add Modal Form -->
+<div class="modal draggable fade bd-example-modal-lg" id="addPaymentPeriodModal" tabindex="-1"
+    role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center">New Payment Period</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-left">
+                <div>
+                    <form [formGroup]="paymentPeriodAddFormGroup" (ngSubmit)="onAddNewPaymentPeriod()">
+                        <div formGroupName="paymentPeriod" class="text-left">
+                            <div class="form-group">
+                                <label for="period">Period</label>
+                                <input formControlName="period" type="month" class="form-control"
+                                    placeholder="Period">
+                                <div *ngIf="period.invalid && (period.dirty || period.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="period.errors.required">
+                                        Period is required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="requiredHoursWorked">Required Hours Worked</label>
+                                <input formControlName="requiredHoursWorked" type="number" class="form-control" placeholder="Required Hours Worked">
+                                <div *ngIf="requiredHoursWorked.invalid && (requiredHoursWorked.dirty || requiredHoursWorked.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="requiredHoursWorked.errors.required">
+                                        Required Hours Worked is required
+                                    </div>
+                                    <div *ngIf="requiredHoursWorked.errors.min">
+                                        Required Hours Worked must be at least 0
+                                    </div>
+                                    <div *ngIf="requiredHoursWorked.errors.max">
+                                        Required Hours Worked must be no more than 200
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-info btn-block">Save</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                    id="paymentPeriod-add-modal-close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PaymentPeriod Edit Modal Form -->
+<div class="modal draggable fade bd-example-modal-lg" id="editPaymentPeriodModal" tabindex="-1"
+    role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center">Edit Payment Period: {{ editedPaymentPeriod }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-left">
+                <div>
+                    <form [formGroup]="paymentPeriodEditFormGroup" (ngSubmit)="onUpdatePaymentPeriod()">
+                        <div formGroupName="paymentPeriod" class="text-left">
+                            <div class="form-group">
+                                <label for="periodEdited">Period</label>
+                                <input formControlName="periodEdited" type="month" class="form-control"
+                                    placeholder="Period">
+                                <div *ngIf="periodEdited.invalid && (periodEdited.dirty || periodEdited.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="periodEdited.errors.required">
+                                        Period is required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="requiredHoursWorkedEdited">Required Hours Worked</label>
+                                <input formControlName="requiredHoursWorkedEdited" type="number" class="form-control" placeholder="Required Hours Worked">
+                                <div *ngIf="requiredHoursWorkedEdited.invalid && (requiredHoursWorkedEdited.dirty || requiredHoursWorkedEdited.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="requiredHoursWorkedEdited.errors.required">
+                                        Required Hours Worked is required
+                                    </div>
+                                    <div *ngIf="requiredHoursWorkedEdited.errors.min">
+                                        Required Hours Worked must be at least 0
+                                    </div>
+                                    <div *ngIf="requiredHoursWorkedEdited.errors.max">
+                                        Required Hours Worked must be no more than 200
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-info btn-block">Save</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                    id="paymentPeriod-edit-modal-close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
