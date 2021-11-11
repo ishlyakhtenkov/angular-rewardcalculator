@@ -80,7 +80,7 @@ export class PositionComponent implements OnInit {
 
   listPositions() {
     this.refreshing = true;
-    this.positionService.getPositionList(+this.selectedDepartment.id).subscribe(
+    this.positionService.getPositionList(this.selectedDepartment.id).subscribe(
       (response: Position[]) => {
         this.positions = response;
         this.refreshing = false;

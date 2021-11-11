@@ -120,9 +120,9 @@ export class DepartmentComponent implements OnInit {
     }
   }
 
-  deleteDepartment(id: string, name: string) {
+  deleteDepartment(id: number, name: string) {
     if (confirm(`Are you sure want to delete the department '${name}'?`)) {
-      this.departmentService.deleteDepartment(+id).subscribe(
+      this.departmentService.deleteDepartment(id).subscribe(
         response => {
           this.notificationService.sendNotification(NotificationType.SUCCESS, `The department '${name}' was deleted`);
           this.listDepartments();

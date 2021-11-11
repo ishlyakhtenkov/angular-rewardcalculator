@@ -123,10 +123,10 @@ export class PaymentPeriodComponent implements OnInit {
     }
   }
 
-  deletePaymentPeriod(id: string, period: Date) {
+  deletePaymentPeriod(id: number, period: Date) {
     let periodText = this.formatPaymentPeriodDate(period);
     if (confirm(`Are you sure want to delete payment period '${periodText}'?`)) {
-      this.paymentPeriodService.deletePaymentPeriod(+id).subscribe(
+      this.paymentPeriodService.deletePaymentPeriod(id).subscribe(
         response => {
           this.notificationService.sendNotification(NotificationType.SUCCESS, `The payment period '${periodText}' was deleted`);
           this.listPaymentPeriods();

@@ -167,8 +167,8 @@ export class UserComponent implements OnInit {
     }
   }
 
-  private getDepartmentsId(departments: Department[]): string[] {
-    let managedDepartmentsId: string[] = [];
+  private getDepartmentsId(departments: Department[]): number[] {
+    let managedDepartmentsId: number[] = [];
     for (let tempDepartment of departments) {
       managedDepartmentsId.push(tempDepartment.id);
     }
@@ -247,11 +247,10 @@ export class UserComponent implements OnInit {
     }
   }
 
-  deleteUser(id: string, name: string) {
+  deleteUser(id: number, name: string) {
     if (confirm(`Are you sure want to delete user '${name}'?`)) {
-      let numId = +id;
-      if (!this.testDataCheckingService.checkTestUser(numId, Messages.TEST_DATA_CANNOT_BE_CHANGED)) {
-        this.userService.deleteUser(numId).subscribe(
+      if (!this.testDataCheckingService.checkTestUser(id, Messages.TEST_DATA_CANNOT_BE_CHANGED)) {
+        this.userService.deleteUser(id).subscribe(
           response => {
             this.notificationService.sendNotification(NotificationType.SUCCESS, `The user '${name}' was deleted`);
             this.listUsers();
@@ -288,8 +287,8 @@ export class UserComponent implements OnInit {
   changeUserStatus(user: User, event: any) {
     let userStatus: boolean = event.target.checked;
     let userStatusText: string = userStatus ? 'enabled' : 'disabled';
-    if (!this.testDataCheckingService.checkTestUser(+user.id, Messages.TEST_DATA_CANNOT_BE_CHANGED)) {
-      this.userService.changeUserStatus(+user.id, userStatus).subscribe(
+    if (!this.testDataCheckingService.checkTestUser(user.id, Messages.TEST_DATA_CANNOT_BE_CHANGED)) {
+      this.userService.changeUserStatus(user.id, userStatus).subscribe(
         response => {        
           this.notificationService.sendNotification(NotificationType.SUCCESS, `User '${user.name}' was ${userStatusText}`);
         },

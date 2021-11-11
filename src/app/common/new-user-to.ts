@@ -1,15 +1,15 @@
 import { Department } from "./department";
 
 export class NewUserTo {
-    id: string;
+    id: number;
     name: string;
     email: string;
     password: string;
     enabled: boolean;
     roles: string[];
-    managedDepartmentsId: string[];
+    managedDepartmentsId: number[];
 
-    constructor(id: string, name: string, email: string, password: string, enabled: boolean, roles: string[], managedDepartmentsId: string[]) { 
+    constructor(id: number, name: string, email: string, password: string, enabled: boolean, roles: string[], managedDepartmentsId: number[]) { 
         this.id = id;
         this.name = name;
         this.email = email;
