@@ -28,6 +28,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { PaymentPeriodService } from './services/payment-period.service';
 import { PaymentPeriodComponent } from './components/payment-period/payment-period.component';
 import { DepartmentComponent } from './components/department/department.component';
+import { PositionComponent } from './components/position/position.component';
+import { PositionService } from './services/position.service';
 
 const routes: Routes = [
   {path: 'profile', component: ProfileComponent, canActivate: [AuthenticationGuard]},
@@ -36,6 +38,7 @@ const routes: Routes = [
   {path: 'users', component: UserComponent, canActivate: [AdminGuard]},
   {path: 'paymentperiods', component: PaymentPeriodComponent, canActivate: [AuthenticationGuard]},
   {path: 'departments', component: DepartmentComponent, canActivate: [AdminPersonnelOfficerEconomistGuard]},
+  {path: 'positions', component: PositionComponent, canActivate: [AuthenticationGuard]},
   {path: '', redirectTo: '/login', pathMatch: 'full'},
   {path: '**', redirectTo: '/login', pathMatch: 'full'}
 ];
@@ -49,7 +52,8 @@ const routes: Routes = [
     HeaderComponent,
     UserComponent,
     PaymentPeriodComponent,
-    DepartmentComponent
+    DepartmentComponent,
+    PositionComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
@@ -63,7 +67,7 @@ const routes: Routes = [
   ],
   providers: [AuthenticationService, NotificationService, ProfileService, {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     AuthenticationGuard, AdminGuard, AdminPersonnelOfficerEconomistGuard, AdminEconomistDepartmentHeadGuard, AdminDepartmentHeadGuard, 
-    UserService, DepartmentService, ErrorHandlingService, TestDataCheckingService, PaymentPeriodService],
+    UserService, DepartmentService, ErrorHandlingService, TestDataCheckingService, PaymentPeriodService, PositionService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -51,6 +51,21 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div *ngIf="isAdminOrDepartmentHead()" class="form-group">
+                                                        <label>Managed Departments</label>
+                                                        <ng-select *ngIf="isDepartmentHeadAndNotAdmin()"
+                                                            [items]="profile?.managedDepartments" 
+                                                            [multiple]="true"
+                                                            [readonly]="true" 
+                                                            bindLabel="name"
+                                                            [ngModel]="profile?.managedDepartments"
+                                                            placeholder="You do not have managed departments">
+                                                        </ng-select>
+                                                        <ng-select *ngIf="isAdmin()"
+                                                            [readonly]="true"
+                                                            placeholder="You can manage any department">
+                                                        </ng-select>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

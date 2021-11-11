@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { User } from '../common/user';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Roles } from '../enums/roles.enum';
+import { Department } from '../common/department';
 
 @Injectable({
   providedIn: 'root'
@@ -97,5 +98,17 @@ export class AuthenticationService {
     } else {
       return false;
     }
+  }
+
+  isDepartmentHeadOnly(): boolean {
+    if (this.isLoggedIn()) {
+      return (this.getUserFromLocalCache().roles.length == 1 && this.getUserFromLocalCache().roles.includes(Roles.DEPARTMENT_HEAD));
+    } else {
+      return false;
+    }
+  }
+
+  getManagedDepartments(): Department[] {
+    return this.getUserFromLocalCache().managedDepartments;
   }
 }

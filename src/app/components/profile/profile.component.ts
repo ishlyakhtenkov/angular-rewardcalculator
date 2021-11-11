@@ -108,6 +108,18 @@ export class ProfileComponent implements OnInit {
     this.location.back()
   }
 
+  isAdmin(): boolean {
+    return this.authenticationService.isAdmin();
+  }
+
+  isAdminOrDepartmentHead(): boolean {
+    return (this.authenticationService.isAdmin() || this.authenticationService.isDepartmentHead());
+  }
+
+  isDepartmentHeadAndNotAdmin(): boolean {
+    return (this.authenticationService.isDepartmentHead() && !this.authenticationService.isAdmin());
+  }
+
   // Getters for changePasswordFormGroup values
   get newPassword() {
     return this.changePasswordFormGroup.get('changedPassword.newPassword');
