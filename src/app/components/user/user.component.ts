@@ -33,6 +33,8 @@ export class UserComponent implements OnInit {
 
   refreshing: boolean;
 
+  showDepartments: boolean;
+
   constructor(private userService: UserService, private departmentService: DepartmentService, private notificationService: NotificationService,
     private formBuilder: FormBuilder, private errorHandlingService: ErrorHandlingService, 
     private testDataCheckingService: TestDataCheckingService) { }
@@ -84,6 +86,7 @@ export class UserComponent implements OnInit {
 
   makeUserAddFormGroup() {
     this.getDepartments();
+    this.showDepartments = false;
     this.userAddFormGroup = this.formBuilder.group({
       user: this.formBuilder.group({
         name: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace]),
@@ -106,6 +109,26 @@ export class UserComponent implements OnInit {
         this.errorHandlingService.handleErrorResponse(errorResponse);
       }
     );
+  }
+
+  checkDepartmentHeadRoleSelectedOnAddForm() {
+    let selectedRoles: string[] = this.roles.value;
+    if (selectedRoles.includes(Roles.DEPARTMENT_HEAD)) {
+      this.showDepartments = true;
+    } else {
+      this.showDepartments = false;
+      this.managedDepartments.setValue('');
+    }
+  }
+
+  checkDepartmentHeadRoleSelectedOnEditForm() {
+    let selectedRoles: string[] = this.rolesEdited.value;
+    if (selectedRoles.includes(Roles.DEPARTMENT_HEAD)) {
+      this.showDepartments = true;
+    } else {
+      this.showDepartments = false;
+      this.managedDepartmentsEdited.setValue('');
+    }
   }
 
   private checkIfMatchingPasswords(passwordKey: string, repeatPasswordKey: string) {
@@ -166,6 +189,11 @@ export class UserComponent implements OnInit {
 
   prepareUserEditFormGroup(user: User) {
     this.editedUserName = user.name;
+    if (user.roles.includes(Roles.DEPARTMENT_HEAD)) {
+      this.showDepartments = true;
+    } else {
+      this.showDepartments = false;
+    }
     this.departmentService.getDepartmentList().subscribe(
       (response: Department[]) => {
         this.departments = response;

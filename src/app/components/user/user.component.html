@@ -130,6 +130,7 @@
                                     [items]="rolesArray" 
                                     [multiple]="true" 
                                     placeholder="Select roles" 
+                                    (change)="checkDepartmentHeadRoleSelectedOnAddForm()"
                                     formControlName="roles">
                                 </ng-select>
                                 <div *ngIf="roles.invalid && (roles.dirty || roles.touched)"
@@ -139,7 +140,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div *ngIf="showDepartments" class="form-group">
                                 <label for="managedDepartments">Managed Departments</label>
                                 <ng-select 
                                     [items]="departments" 
@@ -258,6 +259,7 @@
                                     [items]="rolesArray" 
                                     [multiple]="true" 
                                     placeholder="Select roles"
+                                    (change)="checkDepartmentHeadRoleSelectedOnEditForm()"
                                     formControlName="rolesEdited">
                                 </ng-select>
                                 <div *ngIf="rolesEdited.invalid && (rolesEdited.dirty || rolesEdited.touched)"
@@ -267,7 +269,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div *ngIf="showDepartments" class="form-group">
                                 <label for="managedDepartmentsEdited">Managed Departments</label>
                                 <ng-select 
                                     [items]="departments" 
