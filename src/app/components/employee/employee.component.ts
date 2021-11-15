@@ -47,17 +47,13 @@ export class EmployeeComponent implements OnInit {
     if (this.authenticationService.isDepartmentHeadOnly()) {
       this.departments = this.authenticationService.getManagedDepartments();
       this.selectDepartment();
-      if (this.selectedDepartment != null) {
-        this.listEmployees();
-      }
+      this.listEmployees();
     } else {
       this.departmentService.getDepartmentList().subscribe(
         (response: Department[]) => {
           this.departments = response;
           this.selectDepartment();
-          if (this.selectedDepartment != null) {
-            this.listEmployees();
-          }
+          this.listEmployees();
         },
         (errorResponse: HttpErrorResponse) => {
           this.errorHandlingService.handleErrorResponse(errorResponse);
@@ -79,7 +75,6 @@ export class EmployeeComponent implements OnInit {
       } else {
         this.selectedDepartment = this.departments[0];
       }
-      // this.listEmployees();
     } else {
       this.selectedDepartment = null;
       this.refreshing = false;
@@ -87,20 +82,24 @@ export class EmployeeComponent implements OnInit {
   }
 
   listEmployees() {
-    this.refreshing = true;
-    this.employeeService.getEmployeeList(this.selectedDepartment.id).subscribe(
-      (response: Employee[]) => {
-        this.employees = response;
-        this.refreshing = false;
-      },
-      (errorResponse: HttpErrorResponse) => {
-        if (errorResponse.status == 422) {
-          this.getDepartments();
+    if (this.selectedDepartment != null) {
+      this.refreshing = true;
+      this.employeeService.getEmployeeList(this.selectedDepartment.id).subscribe(
+        (response: Employee[]) => {
+          this.employees = response;
+          this.refreshing = false;
+        },
+        (errorResponse: HttpErrorResponse) => {
+          if (errorResponse.status == 422) {
+            this.getDepartments();
+          }
+          this.errorHandlingService.handleErrorResponse(errorResponse);
+          this.refreshing = false;
         }
-        this.errorHandlingService.handleErrorResponse(errorResponse);
-        this.refreshing = false;
-      }
-    );
+      );
+    } else {
+      this.refreshing = false;
+    }
   }
 
   makeEmployeeAddFormGroup() {
@@ -128,49 +127,12 @@ export class EmployeeComponent implements OnInit {
         },
         (errorResponse: HttpErrorResponse) => {
           if (errorResponse.status == 422) {
-            if (this.departments.length > 0) {
-              this.departmentService.getDepartmentList().subscribe(
-                (response: Department[]) => {
-                  this.departments = response;
-                  this.selectDepartment();
-                  this.department.setValue(this.selectedDepartment);
-                  this.positionService.getPositionList(this.department.value.id).subscribe(
-                    (response: Position[]) => {
-                      this.positions = response;
-                      if (this.positions.length > 0) {
-                        this.position.setValue(this.positions[0]);
-                      } else {
-                        this.position.setValue('');
-                      }
-                    },
-                    (errorResponse: HttpErrorResponse) => {
-                      this.errorHandlingService.handleErrorResponse(errorResponse);
-                    });
-                  if (this.selectedDepartment != null) {
-                    this.listEmployees();
-                  }
-                },
-                (errorResponse: HttpErrorResponse) => {
-                  this.errorHandlingService.handleErrorResponse(errorResponse);
-                }
-              );
-            }
+            this.refreshAddFormData();
           }
           this.errorHandlingService.handleErrorResponse(errorResponse);
         }
       );
     }
-  }
-
-  private makeEmployeeEditFormGroup() {
-    this.employeeEditFormGroup = this.formBuilder.group({
-      employee: this.formBuilder.group({
-        id: [''],
-        nameEdited: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace]),
-        departmentEdited: new FormControl('', [Validators.required]),
-        positionEdited: new FormControl('', [Validators.required])
-      })
-    });
   }
 
   // Submit Add Employee Form
@@ -188,38 +150,54 @@ export class EmployeeComponent implements OnInit {
         },
         (errorResponse: HttpErrorResponse) => {
           if (errorResponse.status == 422) {
-            if (this.departments.length > 0) {
-              this.departmentService.getDepartmentList().subscribe(
-                (response: Department[]) => {
-                  this.departments = response;
-                  this.selectDepartment();
-                  this.department.setValue(this.selectedDepartment);
-                  this.positionService.getPositionList(this.department.value.id).subscribe(
-                    (response: Position[]) => {
-                      this.positions = response;
-                      if (this.positions.length > 0) {
-                        this.position.setValue(this.positions[0]);
-                      } else {
-                        this.position.setValue('');
-                      }
-                    },
-                    (errorResponse: HttpErrorResponse) => {
-                      this.errorHandlingService.handleErrorResponse(errorResponse);
-                    });
-                  if (this.selectedDepartment != null) {
-                    this.listEmployees();
-                  }
-                },
-                (errorResponse: HttpErrorResponse) => {
-                  this.errorHandlingService.handleErrorResponse(errorResponse);
-                }
-              );
-            }
+            this.refreshAddFormData();
           }
           this.errorHandlingService.handleErrorResponseWithButtonClick(errorResponse, "employee-add-modal-close");
         }
       );
     }
+  }
+
+  private refreshAddFormData() {
+    this.departmentService.getDepartmentList().subscribe(
+      (response: Department[]) => {
+        this.departments = response;
+        this.selectDepartment();
+        if (this.selectedDepartment != null) {
+          this.department.setValue(this.selectedDepartment);
+          this.positionService.getPositionList(this.department.value.id).subscribe(
+            (response: Position[]) => {
+              this.positions = response;
+              if (this.positions.length > 0) {
+                this.position.setValue(this.positions[0]);
+              } else {
+                this.position.setValue('');
+              }
+            },
+            (errorResponse: HttpErrorResponse) => {
+              this.errorHandlingService.handleErrorResponse(errorResponse);
+            });
+          this.listEmployees();
+        } else {
+          this.department.setValue('');
+          this.position.setValue('');
+        }
+      },
+      (errorResponse: HttpErrorResponse) => {
+        this.errorHandlingService.handleErrorResponse(errorResponse);
+      }
+    );
+  }
+
+  private makeEmployeeEditFormGroup() {
+    this.employeeEditFormGroup = this.formBuilder.group({
+      employee: this.formBuilder.group({
+        id: [''],
+        nameEdited: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace]),
+        departmentEdited: new FormControl('', [Validators.required]),
+        positionEdited: new FormControl('', [Validators.required])
+      })
+    });
   }
 
   prepareEmployeeEditFormGroup(employee: Employee) {
@@ -268,33 +246,7 @@ export class EmployeeComponent implements OnInit {
         },
         (errorResponse: HttpErrorResponse) => {
           if (errorResponse.status == 422) {
-            if (this.departments.length > 0) {
-              this.departmentService.getDepartmentList().subscribe(
-                (response: Department[]) => {
-                  this.departments = response;
-                  this.selectDepartment();
-                  this.departmentEdited.setValue(this.selectedDepartment);
-                  this.positionService.getPositionList(this.departmentEdited.value.id).subscribe(
-                    (response: Position[]) => {
-                      this.positions = response;
-                      if (this.positions.length > 0) {
-                        this.positionEdited.setValue(this.positions[0]);
-                      } else {
-                        this.positionEdited.setValue('');
-                      }
-                    },
-                    (errorResponse: HttpErrorResponse) => {
-                      this.errorHandlingService.handleErrorResponse(errorResponse);
-                    });
-                  if (this.selectedDepartment != null) {
-                    this.listEmployees();
-                  }
-                },
-                (errorResponse: HttpErrorResponse) => {
-                  this.errorHandlingService.handleErrorResponse(errorResponse);
-                }
-              );
-            }
+            this.refreshEditFormData();
           }
           this.errorHandlingService.handleErrorResponse(errorResponse);
         }
@@ -317,38 +269,43 @@ export class EmployeeComponent implements OnInit {
         },
         (errorResponse: HttpErrorResponse) => {
           if (errorResponse.status == 422) {
-            if (this.departments.length > 0) {
-              this.departmentService.getDepartmentList().subscribe(
-                (response: Department[]) => {
-                  this.departments = response;
-                  this.selectDepartment();
-                  this.departmentEdited.setValue(this.selectedDepartment);
-                  this.positionService.getPositionList(this.departmentEdited.value.id).subscribe(
-                    (response: Position[]) => {
-                      this.positions = response;
-                      if (this.positions.length > 0) {
-                        this.positionEdited.setValue(this.positions[0]);
-                      } else {
-                        this.positionEdited.setValue('');
-                      }
-                    },
-                    (errorResponse: HttpErrorResponse) => {
-                      this.errorHandlingService.handleErrorResponse(errorResponse);
-                    });
-                  if (this.selectedDepartment != null) {
-                    this.listEmployees();
-                  }
-                },
-                (errorResponse: HttpErrorResponse) => {
-                  this.errorHandlingService.handleErrorResponse(errorResponse);
-                }
-              );
-            }
+            this.refreshEditFormData();
           }
           this.errorHandlingService.handleErrorResponseWithButtonClick(errorResponse, "employee-edit-modal-close");
         }
       );
     }
+  }
+
+  private refreshEditFormData() {
+    this.departmentService.getDepartmentList().subscribe(
+      (response: Department[]) => {
+        this.departments = response;
+        this.selectDepartment();
+        if (this.selectedDepartment != null) {
+          this.departmentEdited.setValue(this.selectedDepartment);
+          this.positionService.getPositionList(this.departmentEdited.value.id).subscribe(
+            (response: Position[]) => {
+              this.positions = response;
+              if (this.positions.length > 0) {
+                this.positionEdited.setValue(this.positions[0]);
+              } else {
+                this.positionEdited.setValue('');
+              }
+            },
+            (errorResponse: HttpErrorResponse) => {
+              this.errorHandlingService.handleErrorResponse(errorResponse);
+            });
+            this.listEmployees();
+        } else {
+          this.departmentEdited.setValue('');
+          this.positionEdited.setValue('');
+        }
+      },
+      (errorResponse: HttpErrorResponse) => {
+        this.errorHandlingService.handleErrorResponse(errorResponse);
+      }
+    );
   }
 
   deleteEmployee(id: number, name: string) {
