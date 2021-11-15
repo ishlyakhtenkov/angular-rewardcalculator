@@ -35,12 +35,12 @@ export class PositionComponent implements OnInit {
     private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {
-    this.listDepartments();
+    this.getDepartments();
     this.makePositionAddFormGroup();
     this.makePositionEditFormGroup();
   }
 
-  listDepartments() {
+  getDepartments() {
     this.refreshing = true;
     if (this.authenticationService.isDepartmentHeadOnly()) {
       this.departments = this.authenticationService.getManagedDepartments();
@@ -86,6 +86,9 @@ export class PositionComponent implements OnInit {
         this.refreshing = false;
       },
       (errorResponse: HttpErrorResponse) => {
+        if (errorResponse.status == 422) {
+          this.getDepartments();
+        }
         this.errorHandlingService.handleErrorResponse(errorResponse);
         this.refreshing = false;
       }
@@ -114,7 +117,7 @@ export class PositionComponent implements OnInit {
     });
   }
 
-  // Submit Add Position From
+  // Submit Add Position Form
   onAddNewPosition() {
     if (this.positionAddFormGroup.invalid) {
       this.positionAddFormGroup.markAllAsTouched();
@@ -128,6 +131,10 @@ export class PositionComponent implements OnInit {
           this.listPositions();
         },
         (errorResponse: HttpErrorResponse) => {
+          if (errorResponse.status == 422) {
+            document.getElementById("position-add-modal-close").click();
+            this.getDepartments();
+          }
           this.errorHandlingService.handleErrorResponseWithButtonClick(errorResponse, "position-add-modal-close");
         }
       );
@@ -146,12 +153,12 @@ export class PositionComponent implements OnInit {
     });
   }
 
-  // Submit Edit Position From
+  // Submit Edit Position Form
   onUpdatePosition() {
     if (this.positionEditFormGroup.invalid) {
       this.positionEditFormGroup.markAllAsTouched();
     } else {
-      let updatedPositionTo = new PositionTo(this.id.value, this.nameEdited.value, this.salaryEdited.value, this.chiefPositionEdited.value, +this.selectedDepartment.id);
+      let updatedPositionTo = new PositionTo(this.id.value, this.nameEdited.value, this.salaryEdited.value, this.chiefPositionEdited.value, this.selectedDepartment.id);
       this.positionService.updatePosition(updatedPositionTo).subscribe(
         response => {
           document.getElementById("position-edit-modal-close").click();
@@ -176,6 +183,10 @@ export class PositionComponent implements OnInit {
           this.errorHandlingService.handleErrorResponse(errorResponse);        }
       );
     }
+  }
+
+  isAdminOrPersonnelOfficer(): boolean {
+    return (this.authenticationService.isAdmin() || this.authenticationService.isPersonnelOfficer());
   }
 
   // Getters for positionAddFormGroup values

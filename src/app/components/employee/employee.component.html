@@ -1,20 +1,20 @@
-<!-- Positions Table -->
+<!-- Employees Table -->
 <div class="container mt-2">
     <div class="row mt-2">
         <div class="col-4">
-            <h2 class="text-secondary font-weight-bold">Positions</h2>
+            <h2 class="text-secondary font-weight-bold">Employees</h2>
         </div>
         <div class="col-1">
 
         </div>
         <div class="col-2">
-            <select *ngIf="selectedDepartment == null" class="custom-select" (change)="listPositions()">
+            <select *ngIf="selectedDepartment == null" class="custom-select" (change)="listEmployees()">
                 <option value="" selected disabled hidden>Select Department</option>
                 <option *ngFor="let department of departments" [ngValue]="department">
                     {{ department.name }}
                 </option>
             </select>
-            <select *ngIf="selectedDepartment != null" [(ngModel)]="selectedDepartment" class="custom-select" (change)="listPositions()">
+            <select *ngIf="selectedDepartment != null" [(ngModel)]="selectedDepartment" class="custom-select" (change)="listEmployees()">
                 <option *ngFor="let department of departments" [ngValue]="department">
                     {{ department.name }}
                 </option>
@@ -25,9 +25,9 @@
         </div>
         <div class="col-4 text-right">
             <div class="btn-group">
-                <button [hidden]="!isAdminOrPersonnelOfficer()" type="button" (click)="makePositionAddFormGroup()" class="btn btn-info mr-2" data-toggle="modal"
-                    data-target="#addPositionModal">
-                    <i class="fas fa-plus"></i> Add Position
+                <button [hidden]="!isAdminOrPersonnelOfficer()" type="button" (click)="makeEmployeeAddFormGroup()" class="btn btn-info mr-2" data-toggle="modal"
+                    data-target="#addEmployeeModal">
+                    <i class="fas fa-plus"></i> Add Employee
                 </button>
             </div>
             <div class="btn-group">
@@ -38,60 +38,62 @@
             </div>
         </div>
     </div>
-    <table *ngIf="positions?.length > 0" class="table">
+    <table *ngIf="employees?.length > 0" class="table">
         <thead class="thead-dark">
             <tr align="center">
                 <th>Name</th>
+                <th>Position</th>
                 <th>Salary</th>
                 <th>Chief Position</th>
                 <th [hidden]="!isAdminOrPersonnelOfficer()">Actions</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let tempPosition of positions" align="center">
-                <td class="align-middle">{{ tempPosition.name }}</td>
-                <td class="align-middle">{{ tempPosition.salary }}</td>
-                <td class="align-middle">{{ tempPosition.chiefPosition }}</td>
+            <tr *ngFor="let tempEmployee of employees" align="center">
+                <td class="align-middle">{{ tempEmployee.name }}</td>
+                <td class="align-middle">{{ tempEmployee.position.name }}</td>
+                <td class="align-middle">{{ tempEmployee.position.salary }}</td>
+                <td class="align-middle">{{ tempEmployee.position.chiefPosition }}</td>
                 <td class="align-middle" [hidden]="!isAdminOrPersonnelOfficer()">
-                    <button (click)="preparePositionEditFormGroup(tempPosition)" class="btn btn-outline-info btn-sm"
-                        title="Update Position" data-toggle="modal" data-target="#editPositionModal">
+                    <button (click)="prepareEmployeeEditFormGroup(tempEmployee)" class="btn btn-outline-info btn-sm"
+                        title="Update Employee" data-toggle="modal" data-target="#editEmployeeModal">
                         <i class="fa fa-pencil-alt" aria-hidden="true"></i>
                     </button>
-                    <button (click)="deletePosition(tempPosition.id, tempPosition.name)"
-                        class="btn btn-outline-danger btn-sm ml-1" title="Delete Position"><i class="fas fa-trash"
+                    <button (click)="deleteEmployee(tempEmployee.id, tempEmployee.name)"
+                        class="btn btn-outline-danger btn-sm ml-1" title="Delete Employee"><i class="fas fa-trash"
                             aria-hidden="true"></i></button>
                 </td>
             </tr>
         </tbody>
     </table>
 
-    <!-- if positions is empty then display a message -->
-    <div *ngIf="positions?.length == 0" class="container">
+    <!-- if employees is empty then display a message -->
+    <div *ngIf="employees?.length == 0" class="container">
         <div class="row">
-            <h4 class="alert alert-warning col-md-12">No positions found.</h4>
+            <h4 class="alert alert-warning col-md-12">No employees found.</h4>
         </div>
     </div>
 </div>
 
-<!-- Position Add Modal Form -->
-<div class="modal draggable fade bd-example-modal-lg" id="addPositionModal" tabindex="-1" role="dialog"
+<!-- Employee Add Modal Form -->
+<div class="modal draggable fade bd-example-modal-lg" id="addEmployeeModal" tabindex="-1" role="dialog"
     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-center">New Position</h5>
+                <h5 class="modal-title text-center">New Employee</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body text-left">
                 <div>
-                    <form [formGroup]="positionAddFormGroup" (ngSubmit)="onAddNewPosition()">
-                        <div formGroupName="position" class="text-left">
+                    <form [formGroup]="employeeAddFormGroup" (ngSubmit)="onAddNewEmployee()">
+                        <div formGroupName="employee" class="text-left">
                             <div class="form-group">
-                                <label for="name">Position Name</label>
+                                <label for="name">Employee Name</label>
                                 <input formControlName="name" type="text" class="form-control"
-                                    placeholder="Position name">
+                                    placeholder="Employee name">
                                 <div *ngIf="name.invalid && (name.dirty || name.touched)"
                                     class="alert alert-danger mt-1">
                                     <div *ngIf="name.errors.required || name.errors.notOnlyWhitespace">
@@ -106,31 +108,9 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="name">Position Salary</label>
-                                <input formControlName="salary" type="number" class="form-control"
-                                    placeholder="Position Salary">
-                                <div *ngIf="salary.invalid && (salary.dirty || salary.touched)"
-                                    class="alert alert-danger mt-1">
-                                    <div *ngIf="salary.errors.required">
-                                        Salary is required
-                                    </div>
-                                    <div *ngIf="salary.errors.min">
-                                       Salary must be at least 10000
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" formControlName="chiefPosition" class="form-check-input">
-                                        Chief Position
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="department">Position Department</label>
-                                <select formControlName="department" class="form-control">
-                                    <option value="" selected disabled hidden>Position Department</option>
+                                <label for="department">Employee Department</label>
+                                <select formControlName="department" class="form-control" (change)="getPositionsForAddForm()">
+                                    <option value="" selected disabled hidden>Employee Department</option>
                                     <option *ngFor="let department of departments" [ngValue]="department">
                                         {{ department.name }}
                                     </option>
@@ -142,6 +122,21 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label for="position">Employee Position</label>
+                                <select formControlName="position" class="form-control">
+                                    <option value="" selected disabled hidden>Employee Position</option>
+                                    <option *ngFor="let position of positions" [ngValue]="position">
+                                        {{ position.name }}
+                                    </option>
+                                </select>
+                                <div *ngIf="position.invalid && (position.dirty || position.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="position.errors.required">
+                                        Position is required
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-info btn-block">Save</button>
                     </form>
@@ -149,34 +144,34 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                    id="position-add-modal-close">Close</button>
+                    id="employee-add-modal-close">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Position Edit Modal Form -->
-<div class="modal draggable fade bd-example-modal-lg" id="editPositionModal" tabindex="-1" role="dialog"
+<!-- Employee Edit Modal Form -->
+<div class="modal draggable fade bd-example-modal-lg" id="editEmployeeModal" tabindex="-1" role="dialog"
     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-center">Edit Position: {{ editedPositionName }}</h5>
+                <h5 class="modal-title text-center">Edit Employee: {{ editedEmployeeName }}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body text-left">
                 <div>
-                    <form [formGroup]="positionEditFormGroup" (ngSubmit)="onUpdatePosition()">
-                        <div formGroupName="position" class="text-left">
+                    <form [formGroup]="employeeEditFormGroup" (ngSubmit)="onUpdateEmployee()">
+                        <div formGroupName="employee" class="text-left">
                             <div class="form-group">
                                 <input formControlName="id" type="hidden">
                             </div>
                             <div class="form-group">
-                                <label for="nameEdited">Position Name</label>
+                                <label for="nameEdited">Employee Name</label>
                                 <input formControlName="nameEdited" type="text" class="form-control"
-                                    placeholder="Position name">
+                                    placeholder="Employee name">
                                 <div *ngIf="nameEdited.invalid && (nameEdited.dirty || nameEdited.touched)"
                                     class="alert alert-danger mt-1">
                                     <div *ngIf="nameEdited.errors.required || nameEdited.errors.notOnlyWhitespace">
@@ -191,26 +186,33 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="name">Position Salary</label>
-                                <input formControlName="salaryEdited" type="number" class="form-control"
-                                    placeholder="Position Salary">
-                                <div *ngIf="salaryEdited.invalid && (salaryEdited.dirty || salaryEdited.touched)"
+                                <label for="departmentEdited">Employee Department</label>
+                                <select formControlName="departmentEdited" class="form-control" (change)="getPositionsForEditForm()">
+                                    <option value="" selected disabled hidden>Employee Department</option>
+                                    <option *ngFor="let department of departments" [ngValue]="department">
+                                        {{ department.name }}
+                                    </option>
+                                </select>
+                                <div *ngIf="departmentEdited.invalid && (departmentEdited.dirty || departmentEdited.touched)"
                                     class="alert alert-danger mt-1">
-                                    <div
-                                        *ngIf="salaryEdited.errors.required">
-                                        Saalry is required
-                                    </div>
-                                    <div *ngIf="salaryEdited.errors.min">
-                                        Salary must be at least 10000
+                                    <div *ngIf="departmentEdited.errors.required">
+                                        Department is required
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" formControlName="chiefPositionEdited" class="form-check-input">
-                                        Chief Position
-                                    </label>
+                                <label for="positionEdited">Employee Position</label>
+                                <select formControlName="positionEdited" class="form-control">
+                                    <option value="" selected disabled hidden>Employee Position</option>
+                                    <option *ngFor="let position of positions" [ngValue]="position">
+                                        {{ position.name }}
+                                    </option>
+                                </select>
+                                <div *ngIf="positionEdited.invalid && (positionEdited.dirty || positionEdited.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="positionEdited.errors.required">
+                                        Position is required
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -220,7 +222,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                    id="position-edit-modal-close">Close</button>
+                    id="employee-edit-modal-close">Close</button>
             </div>
         </div>
     </div>

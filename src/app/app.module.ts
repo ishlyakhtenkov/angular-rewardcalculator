@@ -30,15 +30,17 @@ import { PaymentPeriodComponent } from './components/payment-period/payment-peri
 import { DepartmentComponent } from './components/department/department.component';
 import { PositionComponent } from './components/position/position.component';
 import { PositionService } from './services/position.service';
+import { EmployeeService } from './services/employee.service';
+import { EmployeeComponent } from './components/employee/employee.component';
 
 const routes: Routes = [
   {path: 'profile', component: ProfileComponent, canActivate: [AuthenticationGuard]},
   {path: 'login', component: LoginComponent},
-  // {path: 'employees', component: EmployeeComponent, canActivate: [AuthenticationGuard]},
   {path: 'users', component: UserComponent, canActivate: [AdminGuard]},
   {path: 'paymentperiods', component: PaymentPeriodComponent, canActivate: [AuthenticationGuard]},
   {path: 'departments', component: DepartmentComponent, canActivate: [AdminPersonnelOfficerEconomistGuard]},
   {path: 'positions', component: PositionComponent, canActivate: [AuthenticationGuard]},
+  {path: 'employees', component: EmployeeComponent, canActivate: [AuthenticationGuard]},
   {path: '', redirectTo: '/login', pathMatch: 'full'},
   {path: '**', redirectTo: '/login', pathMatch: 'full'}
 ];
@@ -53,7 +55,8 @@ const routes: Routes = [
     UserComponent,
     PaymentPeriodComponent,
     DepartmentComponent,
-    PositionComponent
+    PositionComponent,
+    EmployeeComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
@@ -67,7 +70,7 @@ const routes: Routes = [
   ],
   providers: [AuthenticationService, NotificationService, ProfileService, {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     AuthenticationGuard, AdminGuard, AdminPersonnelOfficerEconomistGuard, AdminEconomistDepartmentHeadGuard, AdminDepartmentHeadGuard, 
-    UserService, DepartmentService, ErrorHandlingService, TestDataCheckingService, PaymentPeriodService, PositionService],
+    UserService, DepartmentService, ErrorHandlingService, TestDataCheckingService, PaymentPeriodService, PositionService, EmployeeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
