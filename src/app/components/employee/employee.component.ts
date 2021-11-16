@@ -159,34 +159,9 @@ export class EmployeeComponent implements OnInit {
   }
 
   private refreshAddFormData() {
-    this.departmentService.getDepartmentList().subscribe(
-      (response: Department[]) => {
-        this.departments = response;
-        this.selectDepartment();
-        if (this.selectedDepartment != null) {
-          this.department.setValue(this.selectedDepartment);
-          this.positionService.getPositionList(this.department.value.id).subscribe(
-            (response: Position[]) => {
-              this.positions = response;
-              if (this.positions.length > 0) {
-                this.position.setValue(this.positions[0]);
-              } else {
-                this.position.setValue('');
-              }
-            },
-            (errorResponse: HttpErrorResponse) => {
-              this.errorHandlingService.handleErrorResponse(errorResponse);
-            });
-          this.listEmployees();
-        } else {
-          this.department.setValue('');
-          this.position.setValue('');
-        }
-      },
-      (errorResponse: HttpErrorResponse) => {
-        this.errorHandlingService.handleErrorResponse(errorResponse);
-      }
-    );
+    this.getDepartments();
+    this.department.setValue('');
+    this.position.setValue('');
   }
 
   private makeEmployeeEditFormGroup() {
@@ -316,6 +291,7 @@ export class EmployeeComponent implements OnInit {
           this.listEmployees();
         },
         (errorResponse: HttpErrorResponse) => {
+          this.listEmployees();
           this.errorHandlingService.handleErrorResponse(errorResponse);        }
       );
     }

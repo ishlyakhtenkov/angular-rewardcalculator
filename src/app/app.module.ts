@@ -32,6 +32,8 @@ import { PositionComponent } from './components/position/position.component';
 import { PositionService } from './services/position.service';
 import { EmployeeService } from './services/employee.service';
 import { EmployeeComponent } from './components/employee/employee.component';
+import { DepartmentRewardComponent } from './components/department-reward/department-reward.component';
+import { DepartmentRewardService } from './services/department-reward.service';
 
 const routes: Routes = [
   {path: 'profile', component: ProfileComponent, canActivate: [AuthenticationGuard]},
@@ -41,6 +43,7 @@ const routes: Routes = [
   {path: 'departments', component: DepartmentComponent, canActivate: [AdminPersonnelOfficerEconomistGuard]},
   {path: 'positions', component: PositionComponent, canActivate: [AuthenticationGuard]},
   {path: 'employees', component: EmployeeComponent, canActivate: [AuthenticationGuard]},
+  {path: 'departmentrewards', component: DepartmentRewardComponent, canActivate: [AdminEconomistDepartmentHeadGuard]},
   {path: '', redirectTo: '/login', pathMatch: 'full'},
   {path: '**', redirectTo: '/login', pathMatch: 'full'}
 ];
@@ -56,7 +59,8 @@ const routes: Routes = [
     PaymentPeriodComponent,
     DepartmentComponent,
     PositionComponent,
-    EmployeeComponent
+    EmployeeComponent,
+    DepartmentRewardComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
@@ -70,7 +74,8 @@ const routes: Routes = [
   ],
   providers: [AuthenticationService, NotificationService, ProfileService, {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     AuthenticationGuard, AdminGuard, AdminPersonnelOfficerEconomistGuard, AdminEconomistDepartmentHeadGuard, AdminDepartmentHeadGuard, 
-    UserService, DepartmentService, ErrorHandlingService, TestDataCheckingService, PaymentPeriodService, PositionService, EmployeeService],
+    UserService, DepartmentService, ErrorHandlingService, TestDataCheckingService, PaymentPeriodService, PositionService, 
+    EmployeeService, DepartmentRewardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

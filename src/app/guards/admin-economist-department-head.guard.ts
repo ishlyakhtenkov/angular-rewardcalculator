@@ -13,10 +13,10 @@ export class AdminEconomistDepartmentHeadGuard implements CanActivate {
   constructor(private authenticationService: AuthenticationService, private router: Router, private notificationService: NotificationService) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return this.isUserAdminOrPersonnelOfficerOrEconomist();
+    return this.isUserAdminOrEconomistOrDepartmentHead();
   }
 
-  private isUserAdminOrPersonnelOfficerOrEconomist(): boolean {
+  private isUserAdminOrEconomistOrDepartmentHead(): boolean {
     if (this.authenticationService.isLoggedIn()) {
       if (this.authenticationService.isAdmin() || this.authenticationService.isEconomist() || this.authenticationService.isDepartmentHead()) {
         return true;

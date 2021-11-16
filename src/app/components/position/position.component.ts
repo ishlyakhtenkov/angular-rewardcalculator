@@ -132,8 +132,8 @@ export class PositionComponent implements OnInit {
         },
         (errorResponse: HttpErrorResponse) => {
           if (errorResponse.status == 422) {
-            document.getElementById("position-add-modal-close").click();
             this.getDepartments();
+            this.department.setValue('');
           }
           this.errorHandlingService.handleErrorResponseWithButtonClick(errorResponse, "position-add-modal-close");
         }
@@ -166,6 +166,10 @@ export class PositionComponent implements OnInit {
           this.listPositions();
         },
         (errorResponse: HttpErrorResponse) => {
+          if (errorResponse.status == 422) {
+            document.getElementById("position-edit-modal-close").click();
+            this.getDepartments();
+          }
           this.errorHandlingService.handleErrorResponseWithButtonClick(errorResponse, "position-edit-modal-close");
         }
       );
@@ -180,6 +184,9 @@ export class PositionComponent implements OnInit {
           this.listPositions();
         },
         (errorResponse: HttpErrorResponse) => {
+          if (errorResponse.status == 422) {
+            this.listPositions();
+          }
           this.errorHandlingService.handleErrorResponse(errorResponse);        }
       );
     }

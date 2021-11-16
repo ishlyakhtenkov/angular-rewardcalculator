@@ -256,6 +256,9 @@ export class UserComponent implements OnInit {
             this.listUsers();
           },
           (errorResponse: HttpErrorResponse) => {
+            if (errorResponse.status == 422) {
+              this.listUsers();
+            }
             this.errorHandlingService.handleErrorResponse(errorResponse);
           }
         );

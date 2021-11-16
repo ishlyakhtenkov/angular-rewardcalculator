@@ -1,0 +1,222 @@
+<!-- Department Rewards Table -->
+<div class="container mt-2">
+    <div class="row mt-2">
+        <div class="col-4">
+            <h2 class="text-secondary font-weight-bold">Department Rewards</h2>
+        </div>
+        <div class="col-1">
+
+        </div>
+        <div class="col-2">
+            <select *ngIf="selectedDepartment == null" class="custom-select" (change)="listDepartmentRewards()">
+                <option value="" selected disabled hidden>Select Department</option>
+                <option *ngFor="let department of departments" [ngValue]="department">
+                    {{ department.name }}
+                </option>
+            </select>
+            <select *ngIf="selectedDepartment != null" [(ngModel)]="selectedDepartment" class="custom-select" (change)="listDepartmentRewards()">
+                <option *ngFor="let department of departments" [ngValue]="department">
+                    {{ department.name }}
+                </option>
+            </select>
+        </div>
+        <div class="col-1">
+
+        </div>
+        <div class="col-4 text-right">
+            <div class="btn-group">
+                <button [hidden]="!isAdminOrEconomist()" type="button" (click)="makeDepartmentRewardAddFormGroup()" class="btn btn-info mr-2" data-toggle="modal"
+                    data-target="#addDepartmentRewardModal">
+                    <i class="fas fa-plus"></i> Add Department Reward
+                </button>
+            </div>
+            <div class="btn-group">
+                <button type="button" (click)="refresh()" class="btn btn-light">
+                    <i *ngIf="refreshing" class="fas fa-sync fa-spin"></i><i *ngIf="!refreshing"
+                        class="fas fa-sync"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <table *ngIf="departmentRewards?.length > 0" class="table">
+        <thead class="thead-dark">
+            <tr align="center">
+                <th>Payment Period</th>
+                <th>Allocated Amount</th>
+                <th>Distributed Amount</th>
+                <th [hidden]="!isAdminOrEconomist()">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let tempDepartmentReward of departmentRewards" align="center">
+                <td class="align-middle">{{ tempDepartmentReward.paymentPeriod.period | date:'MMMM yyyy' }}</td>
+                <td class="align-middle">{{ tempDepartmentReward.allocatedAmount }}</td>
+                <td class="align-middle">{{ tempDepartmentReward.distributedAmount }}</td>
+                <td class="align-middle" [hidden]="!isAdminOrEconomist()">
+                    <button (click)="prepareDepartmentRewardEditFormGroup(tempDepartmentReward)" class="btn btn-outline-info btn-sm"
+                        title="Update Department Reward" data-toggle="modal" data-target="#editDepartmentRewardModal">
+                        <i class="fa fa-pencil-alt" aria-hidden="true"></i>
+                    </button>
+                    <button (click)="deleteDepartmentReward(tempDepartmentReward.id, tempDepartmentReward.paymentPeriod.period)"
+                        class="btn btn-outline-danger btn-sm ml-1" title="Delete Department Reward"><i class="fas fa-trash"
+                            aria-hidden="true"></i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- if departmentRewards is empty then display a message -->
+    <div *ngIf="departmentRewards?.length == 0" class="container">
+        <div class="row">
+            <h4 class="alert alert-warning col-md-12">No department rewards found.</h4>
+        </div>
+    </div>
+
+    <!-- Pagination Area -->
+    <div class="footer-pagination">
+        <div class="row mt-3">
+            <div class="col-md-4"></div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-9" style="padding-left: 30%">
+                        <ngb-pagination [(page)]="pageNumber" [pageSize]="pageSize" [collectionSize]="totalElements"
+                            [maxSize]="5" [boundaryLinks]="false" (pageChange)="listDepartmentRewards()">
+                        </ngb-pagination>
+                    </div>
+
+                    <div class="col-md-3 mt-2 text-right">
+                        <span class="mr-2">Page Size</span>
+                        <select (change)="updatePageSize($event.target.value)">
+                            <option selected="true">5</option>
+                            <option>10</option>
+                            <option>20</option>
+                            <option>50</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Department Reward Add Modal Form -->
+<div class="modal draggable fade bd-example-modal-lg" id="addDepartmentRewardModal" tabindex="-1" role="dialog"
+aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title text-center">New Department Reward</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body text-left">
+            <div>
+                <form [formGroup]="departmentRewardAddFormGroup" (ngSubmit)="onAddNewDepartmentReward()">
+                    <div formGroupName="departmentReward" class="text-left">
+                        <div class="form-group">
+                            <label for="department">Department Reward Department</label>
+                            <select formControlName="department" class="form-control">
+                                <option value="" selected disabled hidden>Department Reward Department</option>
+                                <option *ngFor="let department of departments" [ngValue]="department">
+                                    {{ department.name }}
+                                </option>
+                            </select>
+                            <div *ngIf="department.invalid && (department.dirty || department.touched)"
+                                class="alert alert-danger mt-1">
+                                <div *ngIf="department.errors.required">
+                                    Department is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentPeriod">Department Reward Payment Period</label>
+                            <select formControlName="paymentPeriod" class="form-control">
+                                <option value="" selected disabled hidden>Department Reward Payment Period</option>
+                                <option *ngFor="let paymentPeriod of paymentPeriods" [ngValue]="paymentPeriod">
+                                    {{ paymentPeriod.period | date:'MMMM yyyy'}}
+                                </option>
+                            </select>
+                            <div *ngIf="paymentPeriod.invalid && (paymentPeriod.dirty || paymentPeriod.touched)"
+                                class="alert alert-danger mt-1">
+                                <div *ngIf="paymentPeriod.errors.required">
+                                    Payment Period is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="allocatedAmount">Department Reward Allocated Amount</label>
+                            <input formControlName="allocatedAmount" type="number" class="form-control"
+                                placeholder="Department Reward Allocated Amount">
+                            <div *ngIf="allocatedAmount.invalid && (allocatedAmount.dirty || allocatedAmount.touched)"
+                                class="alert alert-danger mt-1">
+                                <div *ngIf="allocatedAmount.errors.required">
+                                    Allocated Amount is required
+                                </div>
+                                <div *ngIf="allocatedAmount.errors.min">
+                                    Allocated Amount must be at least 0
+                                </div>
+                                <div *ngIf="allocatedAmount.errors.max">
+                                    Allocated Amount must be no more than 5000000
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-info btn-block">Save</button>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                id="departmentReward-add-modal-close">Close</button>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Department Reward Edit Modal Form -->
+<div class="modal draggable fade bd-example-modal-lg" id="editDepartmentRewardModal" tabindex="-1" role="dialog"
+aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title text-center">Edit Department Reward: {{ editedDepartmentRewardPeriod | date:'MMMM yyyy'}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body text-left">
+            <div>
+                <form [formGroup]="departmentRewardEditFormGroup" (ngSubmit)="onUpdateDepartmentReward()">
+                    <div formGroupName="departmentReward" class="text-left">
+                        <div class="form-group">
+                            <input formControlName="id" type="hidden">
+                        </div>
+                        <div class="form-group">
+                            <label for="allocatedAmountEdited">Department Reward Allocated Amount</label>
+                            <input formControlName="allocatedAmountEdited" type="number" class="form-control"
+                                placeholder="Department Reward Allocated Amount">
+                            <div *ngIf="allocatedAmountEdited.invalid && (allocatedAmountEdited.dirty || allocatedAmountEdited.touched)"
+                                class="alert alert-danger mt-1">
+                                <div *ngIf="allocatedAmountEdited.errors.required">
+                                    Allocated Amount is required
+                                </div>
+                                <div *ngIf="allocatedAmountEdited.errors.min">
+                                    Allocated Amount must be at least 0
+                                </div>
+                                <div *ngIf="allocatedAmountEdited.errors.max">
+                                    Allocated Amount must be no more than 5000000
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-info btn-block">Save</button>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                id="departmentReward-edit-modal-close">Close</button>
+        </div>
+    </div>
+</div>

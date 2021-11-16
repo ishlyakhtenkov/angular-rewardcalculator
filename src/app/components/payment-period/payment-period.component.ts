@@ -132,6 +132,9 @@ export class PaymentPeriodComponent implements OnInit {
           this.listPaymentPeriods();
         },
         (errorResponse: HttpErrorResponse) => {
+          if (errorResponse.status == 422) {
+            this.listPaymentPeriods();
+          }
           this.errorHandlingService.handleErrorResponse(errorResponse);
         }
       );
