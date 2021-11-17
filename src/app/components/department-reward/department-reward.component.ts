@@ -214,7 +214,7 @@ export class DepartmentRewardComponent implements OnInit {
         },
         (errorResponse: HttpErrorResponse) => {
           if (errorResponse.status == 422) {
-            document.getElementById("departmentReward-edit-modal-close").click();
+            // document.getElementById("departmentReward-edit-modal-close").click();
             this.getDepartments();
           }
           this.errorHandlingService.handleErrorResponseWithButtonClick(errorResponse, "departmentReward-edit-modal-close");

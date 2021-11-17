@@ -23,6 +23,10 @@ export class DepartmentRewardService {
     return this.httpClient.get<GetResponseDepartmentRewards>(`${this.apiUrl}/departments/${departmentId}/departmentrewards/byPage${paginateQueryParams}`);
   }
 
+  getDepartmentReward(id: number): Observable<DepartmentReward> {
+    return this.httpClient.get<DepartmentReward>(`${this.apiUrl}/departmentrewards/${id}`);
+  }
+
   createDepartmentReward(departmentRewardTo: DepartmentRewardTo): Observable<DepartmentReward> {
     return this.httpClient.post<DepartmentReward>(`${this.apiUrl}/departmentrewards`, departmentRewardTo);
   }
