@@ -181,8 +181,8 @@ export class EmployeeRewardComponent implements OnInit {
 
   openApprovingSignatureForm() {
     this.makeApprovingSignatureFormGroup();
+    document.getElementById("approvingSignature-modal-open")?.click();
     document.getElementById("question-modal-close").click();
-    document.getElementById("approvingSignature-modal-open").click();
   }
 
   private makeApprovingSignatureFormGroup() {
