@@ -117,6 +117,9 @@ export class PaymentPeriodComponent implements OnInit {
           this.listPaymentPeriods();
         },
         (errorResponse: HttpErrorResponse) => {
+          if (errorResponse.status == 422) {
+            this.listPaymentPeriods();
+          }
           this.errorHandlingService.handleErrorResponseWithButtonClick(errorResponse, "paymentPeriod-edit-modal-close");
         }
       );

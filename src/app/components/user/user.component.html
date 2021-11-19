@@ -37,7 +37,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let tempUser of users" align="center">
-                <td class="align-middle">{{ tempUser.name }}</td>
+                <td class="align-middle" ng-bind="textFromJSON" style="white-space:pre-wrap">{{ prepareUserName(tempUser.name) }}</td>
                 <td class="align-middle">{{ tempUser.email }}</td>
                 <td class="align-middle">
                     <div *ngFor="let tempRole of tempUser.roles.sort()">

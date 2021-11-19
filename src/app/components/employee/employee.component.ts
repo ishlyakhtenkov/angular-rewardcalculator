@@ -66,7 +66,7 @@ export class EmployeeComponent implements OnInit {
   private selectDepartment() {
     if (this.departments.length > 0) {
       if (this.selectedDepartment != null) {
-        let selectedDepartmentIndex = this.departments.findIndex(tempDepartment => tempDepartment.name === this.selectedDepartment.name);
+        let selectedDepartmentIndex = this.departments.findIndex(tempDepartment => tempDepartment.id === this.selectedDepartment.id);
         if (selectedDepartmentIndex != -1) {
           this.selectedDepartment = this.departments[selectedDepartmentIndex];
         } else {
@@ -159,6 +159,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   private refreshAddFormData() {
+    this.positions = null;
     this.getDepartments();
     this.department.setValue('');
     this.position.setValue('');
@@ -197,7 +198,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   private getSelectedPosition(employee: Employee): Position {
-    let selectedPositionIndex = this.positions.findIndex(position => position.name === employee.position.name);
+    let selectedPositionIndex = this.positions.findIndex(position => position.id === employee.position.id);
     if (selectedPositionIndex != -1) {
       return this.positions[selectedPositionIndex];
     } else if (this.positions.length > 0){

@@ -114,6 +114,9 @@ export class DepartmentComponent implements OnInit {
           this.listDepartments();
         },
         (errorResponse: HttpErrorResponse) => {
+          if (errorResponse.status == 422) {
+            this.listDepartments();
+          }
           this.errorHandlingService.handleErrorResponseWithButtonClick(errorResponse, "department-edit-modal-close");
         }
       );

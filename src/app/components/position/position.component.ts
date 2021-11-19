@@ -62,7 +62,7 @@ export class PositionComponent implements OnInit {
   private selectDepartment() {
     if (this.departments.length > 0) {
       if (this.selectedDepartment != null) {
-        let selectedDepartmentIndex = this.departments.findIndex(tempDepartment => tempDepartment.name === this.selectedDepartment.name);
+        let selectedDepartmentIndex = this.departments.findIndex(tempDepartment => tempDepartment.id === this.selectedDepartment.id);
         if (selectedDepartmentIndex != -1) {
           this.selectedDepartment = this.departments[selectedDepartmentIndex];
         } else {
@@ -167,7 +167,7 @@ export class PositionComponent implements OnInit {
         },
         (errorResponse: HttpErrorResponse) => {
           if (errorResponse.status == 422) {
-            document.getElementById("position-edit-modal-close").click();
+            // document.getElementById("position-edit-modal-close").click();
             this.getDepartments();
           }
           this.errorHandlingService.handleErrorResponseWithButtonClick(errorResponse, "position-edit-modal-close");

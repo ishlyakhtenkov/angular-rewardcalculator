@@ -165,6 +165,10 @@ export class UserComponent implements OnInit {
           this.listUsers();
         },
         (errorResponse: HttpErrorResponse) => {
+          if (errorResponse.status == 422) {
+            this.getDepartments();
+            this.managedDepartments.setValue('');
+          }
           this.errorHandlingService.handleErrorResponseWithButtonClick(errorResponse, "user-add-modal-close");
         }
       );
@@ -244,6 +248,11 @@ export class UserComponent implements OnInit {
             this.listUsers();
           },
           (errorResponse: HttpErrorResponse) => {
+            if (errorResponse.status == 422) {
+              this.getDepartments();
+              this.managedDepartmentsEdited.setValue('');
+              this.listUsers();
+            }
             this.errorHandlingService.handleErrorResponseWithButtonClick(errorResponse, "user-edit-modal-close");
           }
         );
@@ -300,7 +309,11 @@ export class UserComponent implements OnInit {
           this.notificationService.sendNotification(NotificationType.SUCCESS, `User '${user.name}' was ${userStatusText}`);
         },
         (errorResponse: HttpErrorResponse) => {
-          $(document.getElementById(`${user.id}-checkbox`)).prop('checked', !userStatus);
+          if (errorResponse.status == 422) {
+            this.listUsers();
+          } else {
+            $(document.getElementById(`${user.id}-checkbox`)).prop('checked', !userStatus);
+          }
           this.errorHandlingService.handleErrorResponse(errorResponse);
         }
       );  
@@ -322,10 +335,22 @@ export class UserComponent implements OnInit {
             this.notificationService.sendNotification(NotificationType.SUCCESS, `Password for '${this.nameEdited.value}' was updated`);
           },
           (errorResponse: HttpErrorResponse) => {
+            if (errorResponse.status == 422) {
+              this.listUsers();
+            }
             this.errorHandlingService.handleErrorResponseWithButtonClick(errorResponse, "change-password-modal-close");
           }
         );
       }
+    }
+  }
+
+  prepareUserName(name: string): string {
+    if (name.length > 21) {
+      let nameParts = name.split(' ');
+      return nameParts.join('\n');  
+    } else {
+      return name;
     }
   }
 
