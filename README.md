@@ -1,27 +1,23 @@
-# AngularRewardcalculator
+Reward Calculating System project 
+=================================
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.12.
+This is the frontend part of Reward Calculating System designed for calculating monthly reward of employees
+of the department based on the reward allocated to the department, the number of hours worked by the employee, and his success in work.
 
-## Development server
+### Technology stack used: 
+* Angular 2
+* Bootstrap
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### Project key logic:
+* System main purpose: calculating monthly reward of employees of the department based on the reward allocated
+ to the department, the number of hours worked by the employee, and his success in work. Obtaining a reporting form for rewards in pdf format.  
+ The system also allows to receive data of the payment periods of the company, departments, positions and employees of the department.
+* There are 4 types of users: admin, personnel officer, economist and department head.
+* Admins have full control over the system. They can receive, create, update and delete any data. But their main task is user management.
+* Personnel officers can manage data about departments of the company, data about positions in departments, as well as data about employees.
+They also have read-only access to payment periods data in the company.
+* Economists can manage data of payments periods in the company, as well as data about department rewards.  
+They also have read-only access to departments, employees and positions data in the company.  
+* Department heads can manage data of employee rewards of their department.
+They have read-only access to payment periods data in the company, as well as data about their department, their department's positions and employees.
+* Every user has access to their profile data and can also change their password. 
