@@ -21,6 +21,7 @@ import { Messages } from 'src/app/enums/messages.enum';
 export class ProfileComponent implements OnInit {
 
   profile: User;
+  managedDepartmentsNames: string[] = [];
 
   changePasswordFormGroup: FormGroup;
 
@@ -38,11 +39,19 @@ export class ProfileComponent implements OnInit {
     this.profileService.getProfile().subscribe(
       (response: User) => {
         this.profile = response;
+        this.fillManagedDepartmentsNames();
       },
       (errorResponse: HttpErrorResponse) => {
         this.errorHandlingService.handleErrorResponse(errorResponse);
       }
     );
+  }
+
+  private fillManagedDepartmentsNames() {
+    for (let department of this.profile.managedDepartments) {
+      this.managedDepartmentsNames.push(department.name);
+    }
+    this.managedDepartmentsNames.sort();
   }
 
   private makeChangePasswordFormGroup() {

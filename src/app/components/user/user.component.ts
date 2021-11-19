@@ -60,6 +60,10 @@ export class UserComponent implements OnInit {
     );
   }
 
+  sortUserDepartments(user: User): Department[] {
+    return user.managedDepartments.sort((d1, d2) => d1.name.localeCompare(d2.name));
+  }
+
   searchUsers(keyWord: string) {
     this.refreshing = true;
     keyWord = keyWord.trim();

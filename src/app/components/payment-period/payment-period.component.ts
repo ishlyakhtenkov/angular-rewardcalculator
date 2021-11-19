@@ -1,4 +1,4 @@
-import { formatDate } from '@angular/common';
+import { DatePipe, formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -58,7 +58,7 @@ export class PaymentPeriodComponent implements OnInit {
   makePaymentPeriodAddFormGroup() {
     this.paymentPeriodAddFormGroup = this.formBuilder.group({
       paymentPeriod: this.formBuilder.group({
-        period: new FormControl(this.formatPaymentPeriodDate(new Date()), [Validators.required]),
+        period: new FormControl('', [Validators.required]),
         requiredHoursWorked: new FormControl('', [Validators.required, Validators.min(0), Validators.max(200)])
       })
     });

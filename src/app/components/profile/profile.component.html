@@ -53,18 +53,9 @@
                                                     </div>
                                                     <div *ngIf="isAdminOrDepartmentHead()" class="form-group">
                                                         <label>Managed Departments</label>
-                                                        <ng-select *ngIf="isDepartmentHeadAndNotAdmin()"
-                                                            [items]="profile?.managedDepartments" 
-                                                            [multiple]="true"
-                                                            [readonly]="true" 
-                                                            bindLabel="name"
-                                                            [ngModel]="profile?.managedDepartments"
-                                                            placeholder="You do not have managed departments">
-                                                        </ng-select>
-                                                        <ng-select *ngIf="isAdmin()"
-                                                            [readonly]="true"
-                                                            placeholder="You can manage any department">
-                                                        </ng-select>
+                                                        <input type="text" *ngIf="isDepartmentHeadAndNotAdmin()" readonly [defaultValue]="managedDepartmentsNames.join(', ')" 
+                                                            class="form-control" placeholder="You do not have managed departments">
+                                                        <input type="text" *ngIf="isAdmin()" readonly value="All departments" class="form-control">
                                                     </div>
                                                 </div>
                                             </div>
@@ -119,7 +110,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-center">Change Password for {{ profile?.name }}</h5>
+                <h5 class="modal-title text-center">Change Password: {{ profile?.name }}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

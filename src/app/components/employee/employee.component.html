@@ -2,7 +2,7 @@
 <div class="container mt-2">
     <div class="row mt-2">
         <div class="col-4">
-            <h2 class="text-secondary font-weight-bold">Employees</h2>
+            <h2 class="text-secondary font-weight-bold"><i class="fas fa-user-tie mr-2"></i>Employees</h2>
         </div>
         <div class="col-1">
 
@@ -26,12 +26,12 @@
         <div class="col-4 text-right">
             <div class="btn-group">
                 <button [hidden]="!isAdminOrPersonnelOfficer()" type="button" (click)="makeEmployeeAddFormGroup()" class="btn btn-info mr-2" data-toggle="modal"
-                    data-target="#addEmployeeModal">
+                    data-target="#addEmployeeModal" title="Add new Employee">
                     <i class="fas fa-plus"></i> Add Employee
                 </button>
             </div>
             <div class="btn-group">
-                <button type="button" (click)="getDepartments()" class="btn btn-light">
+                <button type="button" (click)="getDepartments()" class="btn btn-light" title="Refresh">
                     <i *ngIf="refreshing" class="fas fa-sync fa-spin"></i><i *ngIf="!refreshing"
                         class="fas fa-sync"></i>
                 </button>

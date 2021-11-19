@@ -146,12 +146,21 @@ export class EmployeeRewardComponent implements OnInit {
     }    
   }
 
+  calculateFullReward(employeeReward: EmployeeReward): number {
+    return employeeReward.hoursWorkedReward + employeeReward.additionalReward - employeeReward.penalty;
+  }
+
+  calculateFullRewardAsPercentageOfSalary(employeeReward: EmployeeReward): number {
+    let percentage = this.calculateFullReward(employeeReward) / employeeReward.employee.position.salary * 100;
+    return Math.floor(percentage);
+  }
+
   getEmployeeRewardsInPdfWithoutApprovingSignature() {
     document.getElementById("question-modal-close").click();
     if (this.selectedDepartmentReward != null) {
       this.employeeRewardService.getEmployeeRewardListInPdf(this.selectedDepartmentReward.id).subscribe(
         response => {
-          this.notificationService.sendNotification(NotificationType.SUCCESS, `The employee rewards pdf form '${this.selectedDepartment.name}--${this.formatPaymentPeriodDate(this.selectedDepartmentReward.paymentPeriod.period)}' was created`);
+          this.notificationService.sendNotification(NotificationType.SUCCESS, `The employee rewards pdf form '${this.selectedDepartment.name}, ${this.formatPaymentPeriodDate(this.selectedDepartmentReward.paymentPeriod.period)}' was created`);
           this.downloadPdfFile(response);
         },
         (errorResponse: HttpErrorResponse) => {
@@ -167,7 +176,7 @@ export class EmployeeRewardComponent implements OnInit {
   private downloadPdfFile(response: any) {
     let pdfBlob = new Blob([response], { type: 'application/pdf' });
     let data = window.URL.createObjectURL(pdfBlob);
-    let fileName = `${this.selectedDepartment.name}--${this.formatPaymentPeriodDate(this.selectedDepartmentReward.paymentPeriod.period)}`;
+    let fileName = `Employee rewards_${this.selectedDepartment.name}, ${this.formatPaymentPeriodDate(this.selectedDepartmentReward.paymentPeriod.period)}`;
     let link = document.createElement('a');
     link.href = data;
     link.download = fileName;
@@ -229,7 +238,7 @@ export class EmployeeRewardComponent implements OnInit {
   }
 
   prepareEmployeeRewardEditFormGroup(employeeReward: EmployeeReward) {
-    this.editedEmployeeRewardDescription = `${employeeReward.employee.name} ${this.formatPaymentPeriodDate(this.selectedDepartmentReward.paymentPeriod.period)}`;
+    this.editedEmployeeRewardDescription = `${employeeReward.employee.name}, ${this.formatPaymentPeriodDate(this.selectedDepartmentReward.paymentPeriod.period)}`;
     this.employeeRewardEditFormGroup = this.formBuilder.group({
       employeeReward: this.formBuilder.group({
         id: [employeeReward.id],

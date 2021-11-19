@@ -28,7 +28,7 @@ export class DepartmentRewardComponent implements OnInit {
 
   departmentRewardAddFormGroup: FormGroup;
   departmentRewardEditFormGroup: FormGroup;
-  editedDepartmentRewardPeriod: string;
+  editedDepartmentRewardDescription: string;
 
   refreshing: boolean;
 
@@ -189,7 +189,7 @@ export class DepartmentRewardComponent implements OnInit {
 
 
   prepareDepartmentRewardEditFormGroup(departmentReward: DepartmentReward) {
-    this.editedDepartmentRewardPeriod = this.formatPaymentPeriodDate(departmentReward.paymentPeriod.period);
+    this.editedDepartmentRewardDescription = `${this.selectedDepartment.name}, ${this.formatPaymentPeriodDate(departmentReward.paymentPeriod.period)}`;
     this.departmentRewardEditFormGroup = this.formBuilder.group({
       departmentReward: this.formBuilder.group({
         id: [departmentReward.id],

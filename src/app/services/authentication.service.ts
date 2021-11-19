@@ -109,6 +109,6 @@ export class AuthenticationService {
   }
 
   getManagedDepartments(): Department[] {
-    return this.getUserFromLocalCache().managedDepartments;
+    return this.getUserFromLocalCache().managedDepartments.sort((d1, d2) => d1.name.localeCompare(d2.name));
   }
 }

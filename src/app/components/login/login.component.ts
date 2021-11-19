@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.authenticationService.isLoggedIn()) {
-      this.router.navigateByUrl('/profile');
+      this.navigateByUrlAccordingToTheRole();
     }
   }
 
@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           const token = response.headers.get('Authorization-Token');
           this.authenticationService.saveToken(token);
           this.authenticationService.addUserToLocalCache(response.body);
-          this.router.navigateByUrl('/profile');
+          this.navigateByUrlAccordingToTheRole();
           this.showLoading = false;
           this.notificationService.sendNotification(NotificationType.SUCCESS, `Welcome, ${response.body.name}!`);
         },
@@ -44,6 +44,20 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
       )
     );
+  }
+
+  private navigateByUrlAccordingToTheRole() {
+    let url: string;
+    if (this.authenticationService.isAdmin()) {
+      url = '/users';
+    } else if (this.authenticationService.isEconomist()) {
+      url = '/departmentrewards';
+    } else if (this.authenticationService.isPersonnelOfficer()) {
+      url = '/departments';
+    } else {
+      url = '/employeerewards';
+    }
+    this.router.navigateByUrl(url);
   }
 
   ngOnDestroy(): void {

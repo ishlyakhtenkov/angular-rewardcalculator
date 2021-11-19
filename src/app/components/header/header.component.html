@@ -13,7 +13,7 @@
 			</li>
 			<li [hidden]="!isUserLoggedIn()" class="nav-item">
 				<a class="nav-link" routerLink="/paymentperiods">
-					<i class="fas fa-calendar-times"></i> Payment Periods
+					<i class="far fa-calendar-alt"></i> Payment Periods
 				</a>
 			</li>
 			<li [hidden]="!isUserLoggedIn()" class="btn-group">
@@ -38,7 +38,7 @@
 				</a>
 				<div class="dropdown-menu">
 					<a [hidden]="!isAdminOrEconomistOrDepartmentHead()" class="dropdown-item" routerLink="/departmentrewards">
-						<i class="fas fa-file-invoice-dollar"></i> Department Rewards
+						<i class="fas fa-money-bill-alt"></i> Department Rewards
 					</a>
 					<a [hidden]="!isAdminOrDepartmentHead()" class="dropdown-item" routerLink="/employeerewards">
 						<i class="fas fa-coins"></i> Employee Rewards
