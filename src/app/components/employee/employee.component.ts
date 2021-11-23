@@ -6,6 +6,7 @@ import { Employee } from 'src/app/common/employee';
 import { EmployeeTo } from 'src/app/common/employee-to';
 import { Position } from 'src/app/common/position';
 import { NotificationType } from 'src/app/enums/notification-type.enum';
+import { Rates } from 'src/app/enums/rates.enum';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { DepartmentService } from 'src/app/services/department.service';
 import { EmployeeService } from 'src/app/services/employee.service';
@@ -105,9 +106,10 @@ export class EmployeeComponent implements OnInit {
   makeEmployeeAddFormGroup() {
     this.employeeAddFormGroup = this.formBuilder.group({
       employee: this.formBuilder.group({
-        name: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace]),
+        name: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(70), CustomValidators.notOnlyWhitespace]),
         department: new FormControl((this.selectedDepartment != null) ? this.selectedDepartment : '', [Validators.required]),
-        position: new FormControl('', [Validators.required])
+        position: new FormControl('', [Validators.required]),
+        rate: new FormControl(Rates.FULL_RATE, [Validators.required]),
       })
     });
     this.getPositionsForAddForm();
@@ -140,7 +142,7 @@ export class EmployeeComponent implements OnInit {
     if (this.employeeAddFormGroup.invalid) {
       this.employeeAddFormGroup.markAllAsTouched();
     } else {
-      let newEmployeeTo = new EmployeeTo(null, this.name.value, this.position.value.id);
+      let newEmployeeTo = new EmployeeTo(null, this.name.value, this.rate.value, this.position.value.id);
       this.employeeService.createEmployee(newEmployeeTo).subscribe(
         (response: Employee) => {
           this.selectedDepartment = this.department.value;
@@ -169,9 +171,10 @@ export class EmployeeComponent implements OnInit {
     this.employeeEditFormGroup = this.formBuilder.group({
       employee: this.formBuilder.group({
         id: [''],
-        nameEdited: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace]),
+        nameEdited: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(70), CustomValidators.notOnlyWhitespace]),
         departmentEdited: new FormControl('', [Validators.required]),
-        positionEdited: new FormControl('', [Validators.required])
+        positionEdited: new FormControl('', [Validators.required]),
+        rateEdited: new FormControl('', [Validators.required])
       })
     });
   }
@@ -185,9 +188,10 @@ export class EmployeeComponent implements OnInit {
         this.employeeEditFormGroup = this.formBuilder.group({
           employee: this.formBuilder.group({
             id: [employee.id],
-            nameEdited: new FormControl(employee.name, [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace]),
+            nameEdited: new FormControl(employee.name, [Validators.required, Validators.minLength(4), Validators.maxLength(70), CustomValidators.notOnlyWhitespace]),
             departmentEdited: new FormControl(this.selectedDepartment, [Validators.required]),
-            positionEdited: new FormControl(selectedPosition != null ? selectedPosition : '', [Validators.required])
+            positionEdited: new FormControl(selectedPosition != null ? selectedPosition : '', [Validators.required]),
+            rateEdited: new FormControl(employee.rate, [Validators.required])
           })
         });
       },
@@ -235,7 +239,7 @@ export class EmployeeComponent implements OnInit {
     if (this.employeeEditFormGroup.invalid) {
       this.employeeEditFormGroup.markAllAsTouched();
     } else {
-      let updateEmployeeTo = new EmployeeTo(this.id.value, this.nameEdited.value, this.positionEdited.value.id);
+      let updateEmployeeTo = new EmployeeTo(this.id.value, this.nameEdited.value, this.rateEdited.value, this.positionEdited.value.id);
       this.employeeService.updateEmployee(updateEmployeeTo).subscribe(
         response => {
           document.getElementById("employee-edit-modal-close").click();
@@ -312,6 +316,9 @@ export class EmployeeComponent implements OnInit {
   get position() {
     return this.employeeAddFormGroup.get('employee.position');
   }
+  get rate() {
+    return this.employeeAddFormGroup.get('employee.rate');
+  }
 
   // Getters for employeeEditFormGroup values
   get id() {
@@ -325,5 +332,8 @@ export class EmployeeComponent implements OnInit {
   }
   get positionEdited() {
     return this.employeeEditFormGroup.get('employee.positionEdited');
+  }
+  get rateEdited() {
+    return this.employeeEditFormGroup.get('employee.rateEdited');
   }
 }

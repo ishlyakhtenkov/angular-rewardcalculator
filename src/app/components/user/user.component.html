@@ -23,21 +23,22 @@
             </div>
         </div>
     </div>
-    <table *ngIf="users?.length > 0" class="table table-bordered">
+    <table *ngIf="users?.length > 0" class="table">
         <thead class="thead-dark">
             <tr align="center">
-                <th class="align-middle">Name</th>
-                <th class="align-middle">Email</th>
-                <th class="align-middle">Roles</th>
-                <th class="align-middle">Enabled</th>
-                <th class="align-middle">Registered</th>
-                <th class="align-middle">Managed Departments</th>
-                <th class="align-middle">Actions</th>
+                <th style="width: 23%" class="align-middle">Name</th>
+                <th style="width: 23%" class="align-middle">Email</th>
+                <th style="width: 15%" class="align-middle">Roles</th>
+                <th style="width: 6%" class="align-middle">Enabled</th>
+                <th style="width: 11%" class="align-middle">Registered</th>
+                <th style="width: 13%" class="align-middle">Managed Departments</th>
+                <th style="width: 9%" class="align-middle">Actions</th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let tempUser of users" align="center">
-                <td class="align-middle" ng-bind="textFromJSON" style="white-space:pre-wrap">{{ prepareUserName(tempUser.name) }}</td>
+                <!-- <td class="align-middle" ng-bind="textFromJSON" style="white-space:pre-line">{{ prepareUserName(tempUser.name) }}</td> -->
+                <td class="align-middle">{{ tempUser.name }}</td>
                 <td class="align-middle">{{ tempUser.email }}</td>
                 <td class="align-middle">
                     <div *ngFor="let tempRole of tempUser.roles.sort()">
@@ -103,7 +104,7 @@
                                         Name must be at least 4 characters long
                                     </div>
                                     <div *ngIf="name.errors.maxlength">
-                                        Name must be no more than 50 characters long
+                                        Name must be no more than 70 characters long
                                     </div>
                                 </div>
                             </div>
@@ -232,7 +233,7 @@
                                         Name must be at least 4 characters long
                                     </div>
                                     <div *ngIf="nameEdited.errors.maxlength">
-                                        Name must be no more than 50 characters long
+                                        Name must be no more than 70 characters long
                                     </div>
                                 </div>
                             </div>

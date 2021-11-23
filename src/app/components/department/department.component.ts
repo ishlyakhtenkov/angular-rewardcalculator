@@ -58,7 +58,7 @@ export class DepartmentComponent implements OnInit {
   makeDepartmentAddFormGroup() {
     this.departmentAddFormGroup = this.formBuilder.group({
       department: this.formBuilder.group({
-        name: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace])
+        name: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(70), CustomValidators.notOnlyWhitespace])
       })
     });
   }
@@ -67,7 +67,7 @@ export class DepartmentComponent implements OnInit {
     this.departmentEditFormGroup = this.formBuilder.group({
       department: this.formBuilder.group({
         id: [''],
-        nameEdited: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace])
+        nameEdited: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(70), CustomValidators.notOnlyWhitespace])
       })
     });
   }
@@ -96,7 +96,7 @@ export class DepartmentComponent implements OnInit {
     this.departmentEditFormGroup = this.formBuilder.group({
       department: this.formBuilder.group({
         id: [department.id],
-        nameEdited: new FormControl(department.name, [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace])
+        nameEdited: new FormControl(department.name, [Validators.required, Validators.minLength(4), Validators.maxLength(70), CustomValidators.notOnlyWhitespace])
       })
     });
   }

@@ -41,19 +41,21 @@
     <table *ngIf="employees?.length > 0" class="table">
         <thead class="thead-dark">
             <tr align="center">
-                <th>Name</th>
-                <th>Position</th>
-                <th>Salary</th>
-                <th>Chief Position</th>
-                <th [hidden]="!isAdminOrPersonnelOfficer()">Actions</th>
+                <th style="width: 24%">Name</th>
+                <th style="width: 29%">Position</th>
+                <th style="width: 12%">Salary</th>
+                <th style="width: 12%">Rate</th>
+                <th style="width: 12%">Chief Position</th>
+                <th style="width: 11%" [hidden]="!isAdminOrPersonnelOfficer()">Actions</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let tempEmployee of employees" align="center">
+            <tr *ngFor="let tempEmployee of employees" align="center" [ngClass]="tempEmployee.position.chiefPosition ? 'table-primary' : ''">
                 <td class="align-middle">{{ tempEmployee.name }}</td>
-                <td class="align-middle">{{ tempEmployee.position.name }}</td>
-                <td class="align-middle">{{ tempEmployee.position.salary }}</td>
-                <td class="align-middle">{{ tempEmployee.position.chiefPosition }}</td>
+                <td class="align-middle" >{{ tempEmployee.position.name }}</td>
+                <td class="align-middle">{{ tempEmployee.position.salary }} ₽</td>
+                <td class="align-middle">{{ tempEmployee.rate }}</td>
+                <td class="align-middle">{{ tempEmployee.position.chiefPosition ? 'Yes' : 'No' }}</td>
                 <td class="align-middle" [hidden]="!isAdminOrPersonnelOfficer()">
                     <button (click)="prepareEmployeeEditFormGroup(tempEmployee)" class="btn btn-outline-info btn-sm"
                         title="Update Employee" data-toggle="modal" data-target="#editEmployeeModal">
@@ -103,7 +105,7 @@
                                         Name must be at least 4 characters long
                                     </div>
                                     <div *ngIf="name.errors.maxlength">
-                                        Name must be no more than 50 characters long
+                                        Name must be no more than 70 characters long
                                     </div>
                                 </div>
                             </div>
@@ -134,6 +136,20 @@
                                     class="alert alert-danger mt-1">
                                     <div *ngIf="position.errors.required">
                                         Position is required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="rate">Employee Rate</label>
+                                <select formControlName="rate" class="form-control">
+                                    <option value="FULL_RATE" selected>FULL RATE</option>
+                                    <option value="HALF_RATE">HALF RATE</option>
+                                    <option value="QUARTER_RATE">QUARTER RATE</option>
+                                </select>
+                                <div *ngIf="rate.invalid && (rate.dirty || rate.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="rate.errors.required">
+                                        Rate is required
                                     </div>
                                 </div>
                             </div>
@@ -181,7 +197,7 @@
                                         Name must be at least 4 characters long
                                     </div>
                                     <div *ngIf="nameEdited.errors.maxlength">
-                                        Name must be no more than 50 characters long
+                                        Name must be no more than 70 characters long
                                     </div>
                                 </div>
                             </div>
@@ -212,6 +228,20 @@
                                     class="alert alert-danger mt-1">
                                     <div *ngIf="positionEdited.errors.required">
                                         Position is required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="rateEdited">Employee Rate</label>
+                                <select formControlName="rateEdited" class="form-control">
+                                    <option value="FULL_RATE" selected>FULL RATE</option>
+                                    <option value="HALF_RATE">HALF RATE</option>
+                                    <option value="QUARTER_RATE">QUARTER RATE</option>
+                                </select>
+                                <div *ngIf="rateEdited.invalid && (rateEdited.dirty || rateEdited.touched)"
+                                    class="alert alert-danger mt-1">
+                                    <div *ngIf="rateEdited.errors.required">
+                                        Rate is required
                                     </div>
                                 </div>
                             </div>
