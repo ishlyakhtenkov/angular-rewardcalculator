@@ -16,8 +16,7 @@
                                         <div class="text-center text-sm-right">
                                             <div class="text-muted"><small>Registered: {{profile?.registered |
                                                     date:'mediumDate'}}</small></div>
-                                            <div class="text-muted"><small>Roles: {{ profile?.roles.join(', ')
-                                                    }}</small></div>
+                                            <div class="text-muted"><small>Roles: {{ prepareRolesForShowing(profile?.roles) }}</small></div>
                                             <div class="text-muted custom-checkbox"><small>
                                                     <input name="active" type="checkbox" [checked]="profile?.enabled"
                                                         class="custom-control-input">

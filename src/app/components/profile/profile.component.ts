@@ -12,6 +12,7 @@ import { CustomValidators } from 'src/app/validators/custom-validators';
 import { TestDataCheckingService } from 'src/app/services/test-data-checking.service';
 import { ErrorHandlingService } from 'src/app/services/error-handling.service';
 import { Messages } from 'src/app/enums/messages.enum';
+import { StringUtil } from 'src/app/utils/string-util';
 
 @Component({
   selector: 'app-profile',
@@ -127,6 +128,15 @@ export class ProfileComponent implements OnInit {
 
   isDepartmentHeadAndNotAdmin(): boolean {
     return (this.authenticationService.isDepartmentHead() && !this.authenticationService.isAdmin());
+  }
+
+  prepareRolesForShowing(roles: string[]): string {
+    let preparedRoles = [];
+    for (let role of roles) {
+      role = StringUtil.UpperCaseFirstLettersOfWords(role.replace('_', ' '));
+      preparedRoles.push(role);
+    }
+    return preparedRoles.sort().join(', ');
   }
 
   // Getters for changePasswordFormGroup values

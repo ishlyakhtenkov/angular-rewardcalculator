@@ -42,7 +42,7 @@
                 <td class="align-middle">{{ tempUser.email }}</td>
                 <td class="align-middle">
                     <div *ngFor="let tempRole of tempUser.roles.sort()">
-                        {{ tempRole }}
+                        {{ prepareRoleForShowing(tempRole) }}
                     </div>
                 </td>
                 <td class="align-middle">
@@ -129,6 +129,8 @@
                                 <label for="roles">User Roles</label>
                                 <ng-select 
                                     [items]="rolesArray" 
+                                    bindLabel="name"
+                                    bindValue="value"
                                     [multiple]="true" 
                                     placeholder="Select roles" 
                                     (change)="checkDepartmentHeadRoleSelectedOnAddForm()"
@@ -258,6 +260,8 @@
                                 <label for="rolesEdited">User Roles</label>
                                 <ng-select 
                                     [items]="rolesArray" 
+                                    bindLabel="name"
+                                    bindValue="value"
                                     [multiple]="true" 
                                     placeholder="Select roles"
                                     (change)="checkDepartmentHeadRoleSelectedOnEditForm()"

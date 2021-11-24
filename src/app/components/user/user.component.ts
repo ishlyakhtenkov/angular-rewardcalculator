@@ -15,6 +15,7 @@ import { CustomValidators } from 'src/app/validators/custom-validators';
 import * as $ from "jquery";
 import { Roles } from 'src/app/enums/roles.enum';
 import { Messages } from 'src/app/enums/messages.enum';
+import { StringUtil } from 'src/app/utils/string-util';
 
 @Component({
   selector: 'app-user',
@@ -29,7 +30,12 @@ export class UserComponent implements OnInit {
   userEditFormGroup: FormGroup;
   editedUserName: string;
   changePasswordFormGroup: FormGroup;
-  rolesArray: string[] = [Roles.ADMIN, Roles.ECONOMIST, Roles.PERSONNEL_OFFICER, Roles.DEPARTMENT_HEAD];
+  rolesArray = [
+    { value: Roles.ADMIN, name: 'Admin' }, 
+    { value: Roles.ECONOMIST, name: 'Economist' }, 
+    { value: Roles.PERSONNEL_OFFICER, name: 'Personnel Officer' }, 
+    { value: Roles.DEPARTMENT_HEAD, name: 'Department Head' },
+  ];
 
   refreshing: boolean;
 
@@ -343,6 +349,10 @@ export class UserComponent implements OnInit {
         );
       }
     }
+  }
+
+  prepareRoleForShowing(role: string): string {
+    return StringUtil.UpperCaseFirstLettersOfWords(role.replace('_', ' '));
   }
 
   // Getters for userAddFormGroup values

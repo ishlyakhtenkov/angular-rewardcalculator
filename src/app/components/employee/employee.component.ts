@@ -13,6 +13,7 @@ import { EmployeeService } from 'src/app/services/employee.service';
 import { ErrorHandlingService } from 'src/app/services/error-handling.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { PositionService } from 'src/app/services/position.service';
+import { StringUtil } from 'src/app/utils/string-util';
 import { CustomValidators } from 'src/app/validators/custom-validators';
 
 @Component({
@@ -305,6 +306,27 @@ export class EmployeeComponent implements OnInit {
   isAdminOrPersonnelOfficer(): boolean {
     return (this.authenticationService.isAdmin() || this.authenticationService.isPersonnelOfficer());
   }
+
+  calculateEmployeeSalary(employee: Employee): number {
+    let positionSalary = employee.position.salary;
+    let rate = employee.rate;
+    let rateCoefficient;
+    if (rate === Rates.FULL_RATE) {
+      rateCoefficient = 1;
+    } else if (rate === Rates.HALF_RATE) {
+      rateCoefficient = 0.5;
+    } else if (rate === Rates.QUARTER_RATE) {
+      rateCoefficient = 0.25;
+    } else {
+      rateCoefficient = -1;
+    }
+    return positionSalary * rateCoefficient;
+  }
+
+  prepareRateForShowing(rate: string): string {
+    return StringUtil.UpperCaseFirstLettersOfWords(rate.replace('_', ' '));
+  }
+
 
   // Getters for employeeAddFormGroup values
   get name() {

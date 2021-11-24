@@ -53,8 +53,8 @@
             <tr *ngFor="let tempEmployee of employees" align="center" [ngClass]="tempEmployee.position.chiefPosition ? 'table-primary' : ''">
                 <td class="align-middle">{{ tempEmployee.name }}</td>
                 <td class="align-middle" >{{ tempEmployee.position.name }}</td>
-                <td class="align-middle">{{ tempEmployee.position.salary }} ₽</td>
-                <td class="align-middle">{{ tempEmployee.rate }}</td>
+                <td class="align-middle">{{ calculateEmployeeSalary(tempEmployee) }} ₽</td>
+                <td class="align-middle">{{ prepareRateForShowing(tempEmployee.rate) }}</td>
                 <td class="align-middle">{{ tempEmployee.position.chiefPosition ? 'Yes' : 'No' }}</td>
                 <td class="align-middle" [hidden]="!isAdminOrPersonnelOfficer()">
                     <button (click)="prepareEmployeeEditFormGroup(tempEmployee)" class="btn btn-outline-info btn-sm"
@@ -142,9 +142,9 @@
                             <div class="form-group">
                                 <label for="rate">Employee Rate</label>
                                 <select formControlName="rate" class="form-control">
-                                    <option value="FULL_RATE" selected>FULL RATE</option>
-                                    <option value="HALF_RATE">HALF RATE</option>
-                                    <option value="QUARTER_RATE">QUARTER RATE</option>
+                                    <option value="FULL_RATE">Full Rate</option>
+                                    <option value="HALF_RATE">Half Rate</option>
+                                    <option value="QUARTER_RATE">Quarter Rate</option>
                                 </select>
                                 <div *ngIf="rate.invalid && (rate.dirty || rate.touched)"
                                     class="alert alert-danger mt-1">
@@ -234,9 +234,9 @@
                             <div class="form-group">
                                 <label for="rateEdited">Employee Rate</label>
                                 <select formControlName="rateEdited" class="form-control">
-                                    <option value="FULL_RATE" selected>FULL RATE</option>
-                                    <option value="HALF_RATE">HALF RATE</option>
-                                    <option value="QUARTER_RATE">QUARTER RATE</option>
+                                    <option value="FULL_RATE">Full Rate</option>
+                                    <option value="HALF_RATE">Half Rate</option>
+                                    <option value="QUARTER_RATE">Quarter Rate</option>
                                 </select>
                                 <div *ngIf="rateEdited.invalid && (rateEdited.dirty || rateEdited.touched)"
                                     class="alert alert-danger mt-1">
