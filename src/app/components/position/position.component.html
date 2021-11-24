@@ -48,7 +48,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let tempPosition of positions" align="center">
+            <tr *ngFor="let tempPosition of positions" align="center" [ngClass]="tempPosition.chiefPosition ? 'table-primary' : ''">
                 <td class="align-middle">{{ tempPosition.name }}</td>
                 <td class="align-middle">{{ tempPosition.salary }}</td>
                 <td class="align-middle">{{ tempPosition.chiefPosition ? 'Yes' : 'No' }}</td>
@@ -101,7 +101,7 @@
                                         Name must be at least 4 characters long
                                     </div>
                                     <div *ngIf="name.errors.maxlength">
-                                        Name must be no more than 50 characters long
+                                        Name must be no more than 70 characters long
                                     </div>
                                 </div>
                             </div>
@@ -186,7 +186,7 @@
                                         Name must be at least 4 characters long
                                     </div>
                                     <div *ngIf="nameEdited.errors.maxlength">
-                                        Name must be no more than 50 characters long
+                                        Name must be no more than 70 characters long
                                     </div>
                                 </div>
                             </div>

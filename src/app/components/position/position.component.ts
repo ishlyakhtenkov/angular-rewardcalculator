@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { Department } from 'src/app/common/department';
 import { Position } from 'src/app/common/position';
 import { PositionTo } from 'src/app/common/position-to';
@@ -10,7 +11,7 @@ import { DepartmentService } from 'src/app/services/department.service';
 import { ErrorHandlingService } from 'src/app/services/error-handling.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { PositionService } from 'src/app/services/position.service';
-import { ProfileService } from 'src/app/services/profile.service';
+import { SharedDataService } from 'src/app/services/shared-data.service';
 import { CustomValidators } from 'src/app/validators/custom-validators';
 
 @Component({
@@ -18,8 +19,9 @@ import { CustomValidators } from 'src/app/validators/custom-validators';
   templateUrl: './position.component.html',
   styleUrls: ['./position.component.css']
 })
-export class PositionComponent implements OnInit {
+export class PositionComponent implements OnInit, OnDestroy {
 
+  subscription: Subscription;
   departments: Department[] = [];
   selectedDepartment: Department = null;
   positions: Position[] = [];
@@ -32,12 +34,17 @@ export class PositionComponent implements OnInit {
 
   constructor(private positionService: PositionService, private departmentService: DepartmentService, private notificationService: NotificationService,
     private formBuilder: FormBuilder, private errorHandlingService: ErrorHandlingService,
-    private authenticationService: AuthenticationService) { }
+    private authenticationService: AuthenticationService, private sharedDataService: SharedDataService) { }
 
   ngOnInit(): void {
+    this.subscription = this.sharedDataService.currentSelectedDepartment.subscribe(selectedDepartment => this.selectedDepartment = selectedDepartment);
     this.getDepartments();
     this.makePositionAddFormGroup();
     this.makePositionEditFormGroup();
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   getDepartments() {
@@ -80,6 +87,7 @@ export class PositionComponent implements OnInit {
 
   listPositions() {
     this.refreshing = true;
+    this.sharedDataService.changeSelectedDepartment(this.selectedDepartment);
     this.positionService.getPositionList(this.selectedDepartment.id).subscribe(
       (response: Position[]) => {
         this.positions = response;
@@ -98,7 +106,7 @@ export class PositionComponent implements OnInit {
   makePositionAddFormGroup() {
     this.positionAddFormGroup = this.formBuilder.group({
       position: this.formBuilder.group({
-        name: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace]),
+        name: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(70), CustomValidators.notOnlyWhitespace]),
         salary: new FormControl('', [Validators.required, Validators.min(10000)]),
         chiefPosition: [false],
         department: new FormControl((this.selectedDepartment != null) ? this.selectedDepartment : '', [Validators.required])
@@ -110,7 +118,7 @@ export class PositionComponent implements OnInit {
     this.positionEditFormGroup = this.formBuilder.group({
       position: this.formBuilder.group({
         id: [''],
-        nameEdited: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace]),
+        nameEdited: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(70), CustomValidators.notOnlyWhitespace]),
         salaryEdited: new FormControl('', [Validators.required, Validators.min(10000)]),
         chiefPositionEdited: [false]
       })
@@ -146,7 +154,7 @@ export class PositionComponent implements OnInit {
     this.positionEditFormGroup = this.formBuilder.group({
       position: this.formBuilder.group({
         id: [position.id],
-        nameEdited: new FormControl(position.name, [Validators.required, Validators.minLength(4), Validators.maxLength(50), CustomValidators.notOnlyWhitespace]),
+        nameEdited: new FormControl(position.name, [Validators.required, Validators.minLength(4), Validators.maxLength(70), CustomValidators.notOnlyWhitespace]),
         salaryEdited: new FormControl(position.salary, [Validators.required, Validators.min(10000)]),
         chiefPositionEdited: [position.chiefPosition]
       })

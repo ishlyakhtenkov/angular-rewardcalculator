@@ -131,12 +131,15 @@ export class ProfileComponent implements OnInit {
   }
 
   prepareRolesForShowing(roles: string[]): string {
-    let preparedRoles = [];
-    for (let role of roles) {
-      role = StringUtil.UpperCaseFirstLettersOfWords(role.replace('_', ' '));
-      preparedRoles.push(role);
+    if (roles != null) {
+      let preparedRoles = [];
+      for (let role of roles) {
+        role = StringUtil.UpperCaseFirstLettersOfWords(role.replace('_', ' '));
+        preparedRoles.push(role);
+      }
+      return preparedRoles.sort().join(', ');  
     }
-    return preparedRoles.sort().join(', ');
+    return '';
   }
 
   // Getters for changePasswordFormGroup values

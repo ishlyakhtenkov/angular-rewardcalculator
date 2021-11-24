@@ -36,6 +36,7 @@ import { DepartmentRewardComponent } from './components/department-reward/depart
 import { DepartmentRewardService } from './services/department-reward.service';
 import { EmployeeRewardService } from './services/employee-reward.service';
 import { EmployeeRewardComponent } from './components/employee-reward/employee-reward.component';
+import { SharedDataService } from './services/shared-data.service';
 
 const routes: Routes = [
   {path: 'profile', component: ProfileComponent, canActivate: [AuthenticationGuard]},
@@ -79,7 +80,7 @@ const routes: Routes = [
   providers: [AuthenticationService, NotificationService, ProfileService, {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     AuthenticationGuard, AdminGuard, AdminPersonnelOfficerEconomistGuard, AdminEconomistDepartmentHeadGuard, AdminDepartmentHeadGuard, 
     UserService, DepartmentService, ErrorHandlingService, TestDataCheckingService, PaymentPeriodService, PositionService, 
-    EmployeeService, DepartmentRewardService, EmployeeRewardService],
+    EmployeeService, DepartmentRewardService, EmployeeRewardService, SharedDataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

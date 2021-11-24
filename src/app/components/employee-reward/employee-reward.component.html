@@ -87,7 +87,7 @@
                 <td class="align-middle">{{ tempEmployeeReward.hoursWorkedReward }} ₽</td>
                 <td class="align-middle">{{ tempEmployeeReward.additionalReward }} ₽</td>
                 <td class="align-middle">{{ tempEmployeeReward.penalty }} ₽</td>
-                <td class="align-middle">{{ calculateFullReward(tempEmployeeReward) }} ₽ ({{ calculateFullRewardAsPercentageOfSalary(tempEmployeeReward)}} %)</td>
+                <td class="align-middle">{{ calculateFullReward(tempEmployeeReward) }} ₽<br> ({{ calculateFullRewardAsPercentageOfSalary(tempEmployeeReward)}} %)</td>
                 <td class="align-middle">
                     <button (click)="prepareEmployeeRewardEditFormGroup(tempEmployeeReward)" class="btn btn-outline-info btn-sm"
                         title="Update Employee Reward" data-toggle="modal" data-target="#editEmployeeRewardModal">

@@ -1,18 +1,21 @@
 import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { Department } from 'src/app/common/department';
 import { DepartmentReward } from 'src/app/common/department-reward';
 import { EmployeeReward } from 'src/app/common/employee-reward';
 import { EmployeeRewardTo } from 'src/app/common/employee-reward-to';
 import { NotificationType } from 'src/app/enums/notification-type.enum';
+import { Rates } from 'src/app/enums/rates.enum';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { DepartmentRewardService } from 'src/app/services/department-reward.service';
 import { DepartmentService } from 'src/app/services/department.service';
 import { EmployeeRewardService } from 'src/app/services/employee-reward.service';
 import { ErrorHandlingService } from 'src/app/services/error-handling.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { SharedDataService } from 'src/app/services/shared-data.service';
 import { CustomValidators } from 'src/app/validators/custom-validators';
 
 @Component({
@@ -20,8 +23,9 @@ import { CustomValidators } from 'src/app/validators/custom-validators';
   templateUrl: './employee-reward.component.html',
   styleUrls: ['./employee-reward.component.css']
 })
-export class EmployeeRewardComponent implements OnInit {
+export class EmployeeRewardComponent implements OnInit, OnDestroy {
 
+  subscription: Subscription;
   departments: Department[] = [];
   selectedDepartment: Department = null;
   departmentRewards: DepartmentReward[] = [];
@@ -37,12 +41,17 @@ export class EmployeeRewardComponent implements OnInit {
   constructor(private departmentRewardService: DepartmentRewardService, private departmentService: DepartmentService, 
     private employeeRewardService: EmployeeRewardService, private notificationService: NotificationService,
     private formBuilder: FormBuilder, private errorHandlingService: ErrorHandlingService, 
-    private authenticationService: AuthenticationService) { }
+    private authenticationService: AuthenticationService, private sharedDataService: SharedDataService) { }
 
   ngOnInit(): void {
+    this.subscription = this.sharedDataService.currentSelectedDepartment.subscribe(selectedDepartment => this.selectedDepartment = selectedDepartment);
     this.getDepartments();
     this.makeEmployeeRewardEditFormGroup();
     this.makeApprovingSignatureFormGroup();
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   getDepartments() {
@@ -87,6 +96,7 @@ export class EmployeeRewardComponent implements OnInit {
   getDepartmentRewards() {
     if (this.selectedDepartment != null) {
       this.refreshing = true;
+      this.sharedDataService.changeSelectedDepartment(this.selectedDepartment);
       this.departmentRewardService.getDepartmentRewardList(this.selectedDepartment.id).subscribe(
         (response: DepartmentReward[]) => {
           this.departmentRewards = response;
@@ -151,7 +161,15 @@ export class EmployeeRewardComponent implements OnInit {
   }
 
   calculateFullRewardAsPercentageOfSalary(employeeReward: EmployeeReward): number {
-    let percentage = this.calculateFullReward(employeeReward) / employeeReward.employee.position.salary * 100;
+    let rateCoefficient = -1;
+    if (employeeReward.employee.rate === Rates.FULL_RATE) {
+      rateCoefficient = 1;
+    } else if (employeeReward.employee.rate === Rates.HALF_RATE) {
+      rateCoefficient = 0.5;
+    } else if (employeeReward.employee.rate === Rates.QUARTER_RATE) {
+      rateCoefficient = 0.25;
+    }
+    let percentage = this.calculateFullReward(employeeReward) / employeeReward.employee.position.salary * 100 / rateCoefficient;
     return Math.floor(percentage);
   }
 

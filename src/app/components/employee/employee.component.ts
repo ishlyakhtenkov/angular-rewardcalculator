@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { Department } from 'src/app/common/department';
 import { Employee } from 'src/app/common/employee';
 import { EmployeeTo } from 'src/app/common/employee-to';
@@ -13,6 +14,7 @@ import { EmployeeService } from 'src/app/services/employee.service';
 import { ErrorHandlingService } from 'src/app/services/error-handling.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { PositionService } from 'src/app/services/position.service';
+import { SharedDataService } from 'src/app/services/shared-data.service';
 import { StringUtil } from 'src/app/utils/string-util';
 import { CustomValidators } from 'src/app/validators/custom-validators';
 
@@ -21,8 +23,9 @@ import { CustomValidators } from 'src/app/validators/custom-validators';
   templateUrl: './employee.component.html',
   styleUrls: ['./employee.component.css']
 })
-export class EmployeeComponent implements OnInit {
+export class EmployeeComponent implements OnInit, OnDestroy {
 
+  subscription: Subscription;
   departments: Department[] = [];
   selectedDepartment: Department = null;
   employees: Employee[] = [];
@@ -36,12 +39,18 @@ export class EmployeeComponent implements OnInit {
 
   constructor(private employeeService: EmployeeService, private departmentService: DepartmentService, 
     private positionService: PositionService, private notificationService: NotificationService, private formBuilder: FormBuilder, 
-    private errorHandlingService: ErrorHandlingService, private authenticationService: AuthenticationService) { }
+    private errorHandlingService: ErrorHandlingService, private authenticationService: AuthenticationService, 
+    private sharedDataService: SharedDataService) { }
 
   ngOnInit(): void {
+    this.subscription = this.sharedDataService.currentSelectedDepartment.subscribe(selectedDepartment => this.selectedDepartment = selectedDepartment);
     this.getDepartments();
     this.makeEmployeeAddFormGroup();
     this.makeEmployeeEditFormGroup();
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   getDepartments() {
@@ -86,6 +95,7 @@ export class EmployeeComponent implements OnInit {
   listEmployees() {
     if (this.selectedDepartment != null) {
       this.refreshing = true;
+      this.sharedDataService.changeSelectedDepartment(this.selectedDepartment);
       this.employeeService.getEmployeeList(this.selectedDepartment.id).subscribe(
         (response: Employee[]) => {
           this.employees = response;

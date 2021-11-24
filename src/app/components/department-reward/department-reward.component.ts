@@ -1,7 +1,8 @@
 import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { Department } from 'src/app/common/department';
 import { DepartmentReward } from 'src/app/common/department-reward';
 import { DepartmentRewardTo } from 'src/app/common/department-reward-to';
@@ -13,14 +14,16 @@ import { DepartmentService } from 'src/app/services/department.service';
 import { ErrorHandlingService } from 'src/app/services/error-handling.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { PaymentPeriodService } from 'src/app/services/payment-period.service';
+import { SharedDataService } from 'src/app/services/shared-data.service';
 
 @Component({
   selector: 'app-department-reward',
   templateUrl: './department-reward.component.html',
   styleUrls: ['./department-reward.component.css']
 })
-export class DepartmentRewardComponent implements OnInit {
+export class DepartmentRewardComponent implements OnInit, OnDestroy {
 
+  subscription: Subscription;
   departments: Department[] = [];
   selectedDepartment: Department = null;
   paymentPeriods: PaymentPeriod[] = [];
@@ -40,12 +43,17 @@ export class DepartmentRewardComponent implements OnInit {
   constructor(private departmentRewardService: DepartmentRewardService, private departmentService: DepartmentService, 
     private paymentPeriodService: PaymentPeriodService, private notificationService: NotificationService,
     private formBuilder: FormBuilder, private errorHandlingService: ErrorHandlingService, 
-    private authenticationService: AuthenticationService) { }
+    private authenticationService: AuthenticationService, private sharedDataService: SharedDataService) { }
 
   ngOnInit(): void {
+    this.subscription = this.sharedDataService.currentSelectedDepartment.subscribe(selectedDepartment => this.selectedDepartment = selectedDepartment);
     this.getDepartments();
     this.makeDepartmentRewardAddFormGroup();
     this.makeDepartmentRewardEditFormGroup();
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   getDepartments() {
@@ -90,6 +98,7 @@ export class DepartmentRewardComponent implements OnInit {
   listDepartmentRewards() {
     if (this.selectedDepartment != null) {
       this.refreshing = true;
+      this.sharedDataService.changeSelectedDepartment(this.selectedDepartment);
       this.departmentRewardService.getDepartmentRewardListPaginate(this.selectedDepartment.id, this.pageNumber - 1, this.pageSize).subscribe(
         response => {
           this.departmentRewards = response.content;

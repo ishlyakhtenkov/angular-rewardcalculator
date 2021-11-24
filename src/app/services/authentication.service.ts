@@ -6,6 +6,7 @@ import { User } from '../common/user';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Roles } from '../enums/roles.enum';
 import { Department } from '../common/department';
+import { SharedDataService } from './shared-data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class AuthenticationService {
   private loggedInUserEmail: string;
   private jwtHelper = new JwtHelperService();
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private sharedDataService: SharedDataService) { }
 
   login(email: string, password: string): Observable<HttpResponse<User>> {
     const authQueryParams = `?email=${email}&password=${password}`;
@@ -29,6 +30,7 @@ export class AuthenticationService {
     this.loggedInUserEmail = null;
     localStorage.removeItem('rewardcalculator-user');
     localStorage.removeItem('rewardcalculator-token');
+    this.sharedDataService.changeSelectedDepartment(null);
   }
 
   saveToken(token: string): void {
