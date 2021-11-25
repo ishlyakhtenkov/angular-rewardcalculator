@@ -41,7 +41,8 @@
     <table *ngIf="employees?.length > 0" class="table">
         <thead class="thead-dark">
             <tr align="center">
-                <th style="width: 24%">Name</th>
+                <th style="width: 3%">#</th>
+                <th style="width: 22%">Name</th>
                 <th style="width: 29%">Position</th>
                 <th style="width: 12%">Salary</th>
                 <th style="width: 12%">Rate</th>
@@ -50,7 +51,8 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let tempEmployee of employees" align="center" [ngClass]="tempEmployee.position.chiefPosition ? 'table-primary' : ''">
+            <tr *ngFor="let tempEmployee of employees; let i = index" align="center" [ngClass]="tempEmployee.position.chiefPosition ? 'table-primary' : ''">
+                <td class="align-middle">{{ i + 1 }}</td>
                 <td class="align-middle">{{ tempEmployee.name }}</td>
                 <td class="align-middle" >{{ tempEmployee.position.name }}</td>
                 <td class="align-middle">{{ calculateEmployeeSalary(tempEmployee) }} ₽</td>
