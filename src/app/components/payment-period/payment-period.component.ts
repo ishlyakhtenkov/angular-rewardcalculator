@@ -56,9 +56,12 @@ export class PaymentPeriodComponent implements OnInit {
   }
 
   makePaymentPeriodAddFormGroup() {
+    let date = new Date();
+    let month = `${date.getMonth() + 1}`;
+    let year = date.getFullYear();
     this.paymentPeriodAddFormGroup = this.formBuilder.group({
       paymentPeriod: this.formBuilder.group({
-        period: new FormControl('', [Validators.required]),
+        period: new FormControl(`${year}-${month}`, [Validators.required]),
         requiredHoursWorked: new FormControl('', [Validators.required, Validators.min(0), Validators.max(200)])
       })
     });
