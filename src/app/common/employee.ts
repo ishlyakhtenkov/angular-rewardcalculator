@@ -4,6 +4,7 @@ export class Employee {
     id: number;
     name: string;
     rate: string;
+    fired: boolean;
     position: Position;
 
     constructor(id: number, name: string, rate: string, position: Position) { 

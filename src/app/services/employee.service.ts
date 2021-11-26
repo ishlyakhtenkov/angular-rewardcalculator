@@ -14,8 +14,12 @@ export class EmployeeService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getEmployeeList(departmentId: number): Observable<Employee[]> {
+  getNotFiredEmployeeList(departmentId: number): Observable<Employee[]> {
     return this.httpClient.get<Employee[]>(`${this.apiUrl}/departments/${departmentId}/employees`);
+  }
+
+  getFiredEmployeeList(departmentId: number): Observable<Employee[]> {
+    return this.httpClient.get<Employee[]>(`${this.apiUrl}/departments/${departmentId}/employees/fired`);
   }
 
   createEmployee(employeeTo: EmployeeTo): Observable<Employee> {
@@ -28,5 +32,10 @@ export class EmployeeService {
 
   deleteEmployee(id: number): Observable<any> {
     return this.httpClient.delete<any>(`${this.apiUrl}/employees/${id}`);
+  }
+
+  changeWorkingStatus(id: number, fired: boolean): Observable<any> {
+    const statusQueryParam = `?fired=${fired}`;
+    return this.httpClient.patch<any>(`${this.apiUrl}/employees/${id}${statusQueryParam}`, {});
   }
 }

@@ -35,6 +35,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
   employeeEditFormGroup: FormGroup;
   editedEmployeeName: string;
 
+  showingFired: boolean = false;
   refreshing: boolean;
 
   constructor(private employeeService: EmployeeService, private departmentService: DepartmentService, 
@@ -55,6 +56,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
 
   getDepartments() {
     this.refreshing = true;
+    this.showingFired = false;
     if (this.authenticationService.isDepartmentHeadOnly()) {
       this.departments = this.authenticationService.getManagedDepartments();
       this.selectDepartment();
@@ -96,9 +98,10 @@ export class EmployeeComponent implements OnInit, OnDestroy {
     if (this.selectedDepartment != null) {
       this.refreshing = true;
       this.sharedDataService.changeSelectedDepartment(this.selectedDepartment);
-      this.employeeService.getEmployeeList(this.selectedDepartment.id).subscribe(
+      this.employeeService.getNotFiredEmployeeList(this.selectedDepartment.id).subscribe(
         (response: Employee[]) => {
           this.employees = response;
+          this.showingFired = false;
           this.refreshing = false;
         },
         (errorResponse: HttpErrorResponse) => {
@@ -256,7 +259,11 @@ export class EmployeeComponent implements OnInit, OnDestroy {
           document.getElementById("employee-edit-modal-close").click();
           this.notificationService.sendNotification(NotificationType.SUCCESS, `The employee '${updateEmployeeTo.name}' was updated`);
           this.selectedDepartment = this.departmentEdited.value;
-          this.listEmployees();
+          if (!this.showingFired) {
+            this.listEmployees();
+          } else {
+            this.showFiredEmployees();
+          }
         },
         (errorResponse: HttpErrorResponse) => {
           if (errorResponse.status == 422) {
@@ -304,10 +311,69 @@ export class EmployeeComponent implements OnInit, OnDestroy {
       this.employeeService.deleteEmployee(id).subscribe(
         response => {
           this.notificationService.sendNotification(NotificationType.SUCCESS, `The employee '${name}' was deleted`);
+          if (!this.showingFired) {
+            this.listEmployees();
+          } else {
+            this.showFiredEmployees();
+          }
+        },
+        (errorResponse: HttpErrorResponse) => {
+          if (!this.showingFired) {
+            this.listEmployees();
+          } else {
+            this.showFiredEmployees();
+          }
+          this.errorHandlingService.handleErrorResponse(errorResponse);        }
+      );
+    }
+  }
+
+  showFiredEmployees() {
+    if (this.selectedDepartment != null) {
+      this.refreshing = true;
+      this.sharedDataService.changeSelectedDepartment(this.selectedDepartment);
+      this.employeeService.getFiredEmployeeList(this.selectedDepartment.id).subscribe(
+        (response: Employee[]) => {
+          this.employees = response;
+          this.showingFired = true;
+          this.refreshing = false;
+        },
+        (errorResponse: HttpErrorResponse) => {
+          if (errorResponse.status == 422) {
+            this.getDepartments();
+          }
+          this.errorHandlingService.handleErrorResponse(errorResponse);
+          this.refreshing = false;
+        }
+      );
+    } else {
+      this.refreshing = false;
+    }
+  }
+
+  fireEmployee(id: number, name: string) {
+    if (confirm(`Are you sure want to fire employee '${name}'?`)) {
+      this.employeeService.changeWorkingStatus(id, true).subscribe(
+        response => {
+          this.notificationService.sendNotification(NotificationType.SUCCESS, `The employee '${name}' was fired`);
           this.listEmployees();
         },
         (errorResponse: HttpErrorResponse) => {
           this.listEmployees();
+          this.errorHandlingService.handleErrorResponse(errorResponse);        }
+      );
+    }
+  }
+
+  recruitBackEmployee(id: number, name: string) {
+    if (confirm(`Are you sure want to recruit back employee '${name}'?`)) {
+      this.employeeService.changeWorkingStatus(id, false).subscribe(
+        response => {
+          this.notificationService.sendNotification(NotificationType.SUCCESS, `The employee '${name}' was recruit back`);
+          this.showFiredEmployees();
+        },
+        (errorResponse: HttpErrorResponse) => {
+          this.showFiredEmployees();
           this.errorHandlingService.handleErrorResponse(errorResponse);        }
       );
     }
