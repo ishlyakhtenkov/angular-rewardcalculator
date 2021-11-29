@@ -50,7 +50,7 @@
         <tbody>
             <tr *ngFor="let tempPosition of positions" align="center" [ngClass]="tempPosition.chiefPosition ? 'table-primary' : ''">
                 <td class="align-middle">{{ tempPosition.name }}</td>
-                <td class="align-middle">{{ tempPosition.salary }}</td>
+                <td class="align-middle">{{ tempPosition.salary }} ₽</td>
                 <td class="align-middle">{{ tempPosition.chiefPosition ? 'Yes' : 'No' }}</td>
                 <td class="align-middle" [hidden]="!isAdminOrPersonnelOfficer()">
                     <button (click)="preparePositionEditFormGroup(tempPosition)" class="btn btn-outline-info btn-sm"
@@ -106,9 +106,9 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="salary">Position Salary</label>
+                                <label for="salary">Position Salary, ₽</label>
                                 <input formControlName="salary" type="number" class="form-control"
-                                    placeholder="Position Salary">
+                                    placeholder="Position Salary, ₽">
                                 <div *ngIf="salary.invalid && (salary.dirty || salary.touched)"
                                     class="alert alert-danger mt-1">
                                     <div *ngIf="salary.errors.required">
@@ -191,9 +191,9 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="name">Position Salary</label>
+                                <label for="name">Position Salary, ₽</label>
                                 <input formControlName="salaryEdited" type="number" class="form-control"
-                                    placeholder="Position Salary">
+                                    placeholder="Position Salary, ₽">
                                 <div *ngIf="salaryEdited.invalid && (salaryEdited.dirty || salaryEdited.touched)"
                                     class="alert alert-danger mt-1">
                                     <div

@@ -7,6 +7,9 @@ export class EmployeeReward {
     hoursWorkedReward: number;
     additionalReward: number;
     penalty: number;
+    currentPositionName: string;
+    currentPositionSalary: number;
+    currentEmployeeRate: string;
 
     constructor(id: number, employee: Employee, hoursWorked: number, hoursWorkedReward: number, 
                 additionalReward: number, penalty: number) { 

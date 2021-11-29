@@ -83,7 +83,7 @@
         <tbody>
             <tr *ngFor="let tempEmployeeReward of employeeRewards; let i = index" align="center">
                 <td class="align-middle">{{ i + 1 }}</td>
-                <td class="align-middle">{{ tempEmployeeReward.employee.position.name }}</td>
+                <td class="align-middle">{{ tempEmployeeReward.currentPositionName }}</td>
                 <td class="align-middle">{{ tempEmployeeReward.employee.name }}</td>
                 <td class="align-middle">{{ tempEmployeeReward.hoursWorked }}</td>
                 <td class="align-middle">{{ tempEmployeeReward.hoursWorkedReward }} ₽</td>

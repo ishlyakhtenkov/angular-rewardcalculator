@@ -162,14 +162,14 @@ export class EmployeeRewardComponent implements OnInit, OnDestroy {
 
   calculateFullRewardAsPercentageOfSalary(employeeReward: EmployeeReward): number {
     let rateCoefficient = -1;
-    if (employeeReward.employee.rate === Rates.FULL_RATE) {
+    if (employeeReward.currentEmployeeRate === Rates.FULL_RATE) {
       rateCoefficient = 1;
-    } else if (employeeReward.employee.rate === Rates.HALF_RATE) {
+    } else if (employeeReward.currentEmployeeRate === Rates.HALF_RATE) {
       rateCoefficient = 0.5;
-    } else if (employeeReward.employee.rate === Rates.QUARTER_RATE) {
+    } else if (employeeReward.currentEmployeeRate === Rates.QUARTER_RATE) {
       rateCoefficient = 0.25;
     }
-    let percentage = this.calculateFullReward(employeeReward) / employeeReward.employee.position.salary * 100 / rateCoefficient;
+    let percentage = (this.calculateFullReward(employeeReward)) / employeeReward.currentPositionSalary * 100 / rateCoefficient;
     return Math.floor(percentage);
   }
 
