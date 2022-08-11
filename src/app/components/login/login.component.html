@@ -4,7 +4,7 @@
     <div class="user_card">
       <div class="d-flex justify-content-center">
         <div style="margin-top: 10px;margin-bottom:-90px;">
-          <h3>Reward Calculator System</h3>
+          <h3>Reward Calculator</h3>
         </div>
       </div>
       <div class="d-flex justify-content-center form_container">
@@ -25,16 +25,19 @@
             <input type="password" autocomplete="current-password" class="form-control" name="password"
               placeholder="Password" ngModel #passwordInput="ngModel" required>
           </div>
-          <span class="help-block" style="color:red;" *ngIf="passwordInput.invalid && passwordInput.touched">Please
-            enter a password.</span>
+          <span class="help-block" style="color:red;" *ngIf="passwordInput.invalid && passwordInput.touched">Please enter a password.</span>
           <div class="d-flex justify-content-center mt-3 login_container">
             <button type="submit" [disabled]="loginForm.invalid || showLoading" name="button" class="btn login_btn">
-              <i *ngIf="showLoading" class="fas fa-spinner fa-spin"></i>&nbsp;&nbsp;
-              <span *ngIf="showLoading">Loading...</span>
+              <i *ngIf="showLoading" class="fas fa-spinner fa-spin"></i>
+              <span *ngIf="showLoading">&nbsp;&nbsp;Loading...</span>
               <span *ngIf="!showLoading">Login</span>
             </button>
           </div>
         </form>
+      </div>
+      <div class="row justify-content-center mt-4 mt-md-5">
+        <button (click)="loginAsAdmin()" class="btn btn-outline-primary my-2 my-sm-0 mr-2">Login as Admin</button>
+        <button (click)="loginAsUser()" class="btn btn-outline-primary my-2 my-sm-0">Login as User</button>
       </div>
     </div>
   </div>

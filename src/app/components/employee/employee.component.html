@@ -1,14 +1,11 @@
 <!-- Employees Table -->
 <div class="container mt-2">
-    <div class="row mt-2">
-        <div class="col-4">
+    <div class="row row-cols-2 row-cols-xl-3 mt-2">
+        <div class="col-12 col-xl-5">
             <h2 *ngIf="!showingFired" class="text-secondary font-weight-bold"><i class="fas fa-user-tie mr-2"></i>Employees</h2>
             <h2 *ngIf="showingFired" class="text-secondary font-weight-bold"><i class="fas fa-user-slash mr-2"></i>Employees (fired)</h2>
         </div>
-        <div class="col-1">
-
-        </div>
-        <div class="col-2">
+        <div class="col col-xl-2">
             <select *ngIf="selectedDepartment == null" class="custom-select" (change)="listEmployees()">
                 <option value="" selected disabled hidden>Select Department</option>
                 <option *ngFor="let department of departments" [ngValue]="department">
@@ -21,23 +18,26 @@
                 </option>
             </select>
         </div>
-        <div class="col-5 text-right">
+        <div class="col col-xl-5 text-right mb-2">
             <div class="row">
-                <div class="col-6 text-center">
+                <div class="col-4 col-xl-6 text-center">
                     <div class="btn-group">
                         <button *ngIf="!showingFired" type="button" (click)="showFiredEmployees()" class="btn btn-outline-warning" title="Show Fired Employees">
-                            <i class="fas fa-user-slash"></i> Show Fired
+                            <span class="d-none d-xl-block"><i class="fas fa-user-slash"></i> Show Fired</span>
+                            <span class="d-xl-none"><i class="fas fa-user-slash"></i></span> 
                         </button>
                         <button *ngIf="showingFired" type="button" (click)="listEmployees()" class="btn btn-outline-success" title="Show Fired Employees">
-                            <i class="fas fa-user-tie"></i> Show Working
+                            <span class="d-none d-xl-block"><i class="fas fa-user-tie"></i> Show Working</span>
+                            <span class="d-xl-none"><i class="fas fa-user-tie"></i></span> 
                         </button>
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-8 col-xl-6">
                     <div class="btn-group">
                         <button [hidden]="!isAdminOrPersonnelOfficer()" type="button" (click)="makeEmployeeAddFormGroup()" class="btn btn-info mr-2" data-toggle="modal"
                             data-target="#addEmployeeModal" title="Add new Employee">
-                            <i class="fas fa-plus"></i> Add Employee
+                            <span class="d-none d-xl-block"><i class="fas fa-plus"></i> Add Employee</span>
+                            <span class="d-xl-none"><i class="fas fa-plus"></i></span> 
                         </button>
                     </div>
                     <div class="btn-group">
@@ -50,47 +50,50 @@
             </div>
         </div>
     </div>
-    <table *ngIf="employees?.length > 0" class="table">
-        <thead class="thead-dark">
-            <tr align="center">
-                <th style="width: 3%">#</th>
-                <th style="width: 22%">Name</th>
-                <th style="width: 29%">Position</th>
-                <th style="width: 12%">Salary</th>
-                <th style="width: 10%">Rate</th>
-                <th style="width: 12%">Chief Position</th>
-                <th style="width: 13%" [hidden]="!isAdminOrPersonnelOfficer()">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let tempEmployee of employees; let i = index" align="center" [ngClass]="{'table-primary' : !showingFired && tempEmployee.position.chiefPosition, 'table-danger' : showingFired}">  
-                <td class="align-middle">{{ i + 1 }}</td>
-                <td class="align-middle">{{ tempEmployee.name }}</td>
-                <td class="align-middle" >{{ tempEmployee.position.name }}</td>
-                <td class="align-middle">{{ calculateEmployeeSalary(tempEmployee) }} ₽</td>
-                <td class="align-middle">{{ prepareRateForShowing(tempEmployee.rate) }}</td>
-                <td class="align-middle">{{ tempEmployee.position.chiefPosition ? 'Yes' : 'No' }}</td>
-                <td class="align-middle" [hidden]="!isAdminOrPersonnelOfficer()">
-                    <button (click)="prepareEmployeeEditFormGroup(tempEmployee)" class="btn btn-outline-info btn-sm"
-                        title="Update Employee" data-toggle="modal" data-target="#editEmployeeModal">
-                        <i class="fa fa-pencil-alt" aria-hidden="true"></i>
-                    </button>
-                    <button *ngIf="!showingFired" (click)="fireEmployee(tempEmployee.id, tempEmployee.name)"
-                        class="btn btn-outline-warning btn-sm ml-1" title="Fire Employee"><i class="fas fa-user-slash"
-                            aria-hidden="true"></i>
-                    </button>
-                    <button *ngIf="showingFired" (click)="recruitBackEmployee(tempEmployee.id, tempEmployee.name)"
-                        class="btn btn-outline-success btn-sm ml-1" title="Recruit Back Employee"><i class="fas fa-user-tie"
-                            aria-hidden="true"></i>
-                    </button>
-                    <button (click)="deleteEmployee(tempEmployee.id, tempEmployee.name)"
-                        class="btn btn-outline-danger btn-sm ml-1" title="Delete Employee"><i class="fas fa-trash"
-                            aria-hidden="true"></i>
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+
+    <div class="table-responsive">
+        <table *ngIf="employees?.length > 0" class="table">
+            <thead class="thead-dark">
+                <tr align="center">
+                    <th class="align-middle" style="width: 3%">#</th>
+                    <th class="align-middle" style="width: 22%">Name</th>
+                    <th class="align-middle" style="width: 29%">Position</th>
+                    <th class="align-middle" style="width: 12%">Salary</th>
+                    <th class="align-middle" style="width: 10%">Rate</th>
+                    <th class="align-middle" style="width: 12%">Chief Position</th>
+                    <th class="align-middle" style="width: 13%" [hidden]="!isAdminOrPersonnelOfficer()">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let tempEmployee of employees; let i = index" align="center" [ngClass]="{'table-primary' : !showingFired && tempEmployee.position.chiefPosition, 'table-danger' : showingFired}">  
+                    <td class="align-middle text-nowrap">{{ i + 1 }}</td>
+                    <td class="align-middle text-nowrap">{{ tempEmployee.name }}</td>
+                    <td class="align-middle text-nowrap" >{{ tempEmployee.position.name }}</td>
+                    <td class="align-middle text-nowrap">{{ calculateEmployeeSalary(tempEmployee) }} ₽</td>
+                    <td class="align-middle text-nowrap">{{ prepareRateForShowing(tempEmployee.rate) }}</td>
+                    <td class="align-middle text-nowrap">{{ tempEmployee.position.chiefPosition ? 'Yes' : 'No' }}</td>
+                    <td class="align-middle text-nowrap" [hidden]="!isAdminOrPersonnelOfficer()">
+                        <button (click)="prepareEmployeeEditFormGroup(tempEmployee)" class="btn btn-outline-info btn-sm"
+                            title="Update Employee" data-toggle="modal" data-target="#editEmployeeModal">
+                            <i class="fa fa-pencil-alt" aria-hidden="true"></i>
+                        </button>
+                        <button *ngIf="!showingFired" (click)="fireEmployee(tempEmployee.id, tempEmployee.name)"
+                            class="btn btn-outline-warning btn-sm ml-1" title="Fire Employee"><i class="fas fa-user-slash"
+                                aria-hidden="true"></i>
+                        </button>
+                        <button *ngIf="showingFired" (click)="recruitBackEmployee(tempEmployee.id, tempEmployee.name)"
+                            class="btn btn-outline-success btn-sm ml-1" title="Recruit Back Employee"><i class="fas fa-user-tie"
+                                aria-hidden="true"></i>
+                        </button>
+                        <button (click)="deleteEmployee(tempEmployee.id, tempEmployee.name)"
+                            class="btn btn-outline-danger btn-sm ml-1" title="Delete Employee"><i class="fas fa-trash"
+                                aria-hidden="true"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>  
 
     <!-- if employees is empty then display a message -->
     <div *ngIf="employees?.length == 0" class="container">

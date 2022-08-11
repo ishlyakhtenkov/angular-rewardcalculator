@@ -1,10 +1,10 @@
 <!-- Employee Rewards Table -->
 <div class="container mt-1">
-    <div class="row mt-1">
-        <div class="col-3 my-auto">
+    <div class="row row-cols-3 row-cols-xl-6 mt-2">
+        <div class="col-12 col-xl-3 my-auto">
             <h2 class="text-secondary font-weight-bold"><i class="fas fa-coins mr-2"></i>Empl. Rew-s</h2>
         </div>
-        <div class="col-2 my-auto">
+        <div class="col-6 col-xl-2 my-auto">
             <select *ngIf="selectedDepartment == null" class="custom-select" (change)="getDepartmentRewards()">
                 <option value="" selected disabled hidden>Select Department</option>
                 <option *ngFor="let department of departments" [ngValue]="department">
@@ -17,7 +17,7 @@
                 </option>
             </select>
         </div>
-        <div class="col-2 my-auto">
+        <div class="col-6 col-xl-2 my-auto">
             <select *ngIf="selectedDepartmentReward == null" class="custom-select" (change)="listEmployeeRewards()">
                 <option value="" selected disabled hidden>Dep-t Reward</option>
                 <option *ngFor="let departmentReward of departmentRewards" [ngValue]="departmentReward">
@@ -31,12 +31,12 @@
                 </option>
             </select>
         </div>
-        <div class="col-4 text-left my-auto">
-            <div class="row">
-                <div class="col-11">
+        <div class="col-10 col-xl-4 text-left my-auto">
+            <div class="row mt-xl-0 mt-2">
+                <div class="col-10 col-xl-11">
                     <div *ngIf="selectedDepartmentReward != null" class="row">
                         <div class="col-7">
-                            <h6 class="text-warning font-weight-bold my-auto">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Allocated: {{ selectedDepartmentReward?.allocatedAmount }} ₽</h6>
+                            <h6 class="text-warning font-weight-bold my-auto ml-xl-4">Allocated: {{ selectedDepartmentReward?.allocatedAmount }} ₽</h6>
                         </div>
                         <div class="col-5 text-right">
                             <h6 class="text-success font-weight-bold my-auto">Left: {{ selectedDepartmentReward?.allocatedAmount - selectedDepartmentReward?.distributedAmount }} ₽&nbsp;</h6>
@@ -44,11 +44,11 @@
                     </div>
                     <div *ngIf="selectedDepartmentReward != null" class="row">
                         <div class="col-12">
-                            <h6 class="text-primary font-weight-bold my-auto">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Distributed: {{ selectedDepartmentReward?.distributedAmount }} ₽</h6>
+                            <h6 class="text-primary font-weight-bold my-auto ml-xl-4">Distributed: {{ selectedDepartmentReward?.distributedAmount }} ₽</h6>
                         </div>
                     </div>               
                 </div>
-                <div class="col-1 text-right">
+                <div class="col-2 col-xl-1 text-right">
                     <div class="btn-group" *ngIf="selectedDepartmentReward != null">
                         <button type="button" class="btn btn-outline-danger" title="Get in PDF" data-toggle="modal" data-target="#questionModal">
                             <i class="fas fa-file-pdf" aria-hidden="true"></i>
@@ -57,7 +57,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-1 text-right my-auto">
+        <div class="col-2 col-xl-1 text-right my-xl-auto mt-2">
             <div class="btn-group">
                 <button type="button" (click)="getDepartments()" class="btn btn-light" title="Refresh">
                     <i *ngIf="refreshing" class="fas fa-sync fa-spin"></i><i *ngIf="!refreshing"
@@ -66,39 +66,43 @@
             </div>
         </div>
     </div>
-    <table *ngIf="employeeRewards?.length > 0" class="table mt-1">
-        <thead class="thead-dark">
-            <tr align="center">
-                <th style="width: 3%" class="align-middle">#</th>
-                <th style="width: 29%" class="align-middle">Position</th>
-                <th style="width: 22%" class="align-middle">Name</th>
-                <th style="width: 8%" class="align-middle">Hours Worked</th>
-                <th style="width: 8%" class="align-middle">Hours Worked Reward</th>
-                <th style="width: 8%" class="align-middle">Additional Reward</th>
-                <th style="width: 7%" class="align-middle">Penalty</th>
-                <th style="width: 7%" class="align-middle">Full Reward</th>
-                <th style="width: 8%" class="align-middle">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let tempEmployeeReward of employeeRewards; let i = index" align="center">
-                <td class="align-middle">{{ i + 1 }}</td>
-                <td class="align-middle">{{ tempEmployeeReward.currentPositionName }}</td>
-                <td class="align-middle">{{ tempEmployeeReward.employee.name }}</td>
-                <td class="align-middle">{{ tempEmployeeReward.hoursWorked }}</td>
-                <td class="align-middle">{{ tempEmployeeReward.hoursWorkedReward }} ₽</td>
-                <td class="align-middle">{{ tempEmployeeReward.additionalReward }} ₽</td>
-                <td class="align-middle">{{ tempEmployeeReward.penalty }} ₽</td>
-                <td class="align-middle">{{ calculateFullReward(tempEmployeeReward) }} ₽<br> ({{ calculateFullRewardAsPercentageOfSalary(tempEmployeeReward)}} %)</td>
-                <td class="align-middle">
-                    <button (click)="prepareEmployeeRewardEditFormGroup(tempEmployeeReward)" class="btn btn-outline-info btn-sm"
-                        title="Update Employee Reward" data-toggle="modal" data-target="#editEmployeeRewardModal">
-                        <i class="fa fa-pencil-alt" aria-hidden="true"></i>
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+
+    <div class="table-responsive">
+        <table *ngIf="employeeRewards?.length > 0" class="table mt-1">
+            <thead class="thead-dark">
+                <tr align="center">
+                    <th class="align-middle" style="width: 3%" class="align-middle">#</th>
+                    <th class="align-middle" style="width: 29%" class="align-middle">Position</th>
+                    <th class="align-middle" style="width: 22%" class="align-middle">Name</th>
+                    <th class="align-middle" style="width: 8%" class="align-middle">Hours Worked</th>
+                    <th class="align-middle" style="width: 8%" class="align-middle">Hours Worked Reward</th>
+                    <th class="align-middle" style="width: 8%" class="align-middle">Additional Reward</th>
+                    <th class="align-middle" style="width: 7%" class="align-middle">Penalty</th>
+                    <th class="align-middle" style="width: 7%" class="align-middle">Full Reward</th>
+                    <th class="align-middle" style="width: 8%" class="align-middle">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let tempEmployeeReward of employeeRewards; let i = index" align="center">
+                    <td class="align-middle text-nowrap">{{ i + 1 }}</td>
+                    <td class="align-middle text-nowrap">{{ tempEmployeeReward.currentPositionName }}</td>
+                    <td class="align-middle text-nowrap">{{ tempEmployeeReward.employee.name }}</td>
+                    <td class="align-middle text-nowrap">{{ tempEmployeeReward.hoursWorked }}</td>
+                    <td class="align-middle text-nowrap">{{ tempEmployeeReward.hoursWorkedReward }} ₽</td>
+                    <td class="align-middle text-nowrap">{{ tempEmployeeReward.additionalReward }} ₽</td>
+                    <td class="align-middle text-nowrap">{{ tempEmployeeReward.penalty }} ₽</td>
+                    <td class="align-middle text-nowrap">{{ calculateFullReward(tempEmployeeReward) }} ₽<br> ({{ calculateFullRewardAsPercentageOfSalary(tempEmployeeReward)}} %)</td>
+                    <td class="align-middle text-nowrap">
+                        <button (click)="prepareEmployeeRewardEditFormGroup(tempEmployeeReward)" class="btn btn-outline-info btn-sm"
+                            title="Update Employee Reward" data-toggle="modal" data-target="#editEmployeeRewardModal">
+                            <i class="fa fa-pencil-alt" aria-hidden="true"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
 
     <!-- if employeeRewards is empty then display a message -->
     <div *ngIf="employeeRewards?.length == 0" class="container mt-1">

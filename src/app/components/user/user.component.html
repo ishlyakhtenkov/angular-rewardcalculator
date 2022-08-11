@@ -1,21 +1,19 @@
 <!-- Users Table -->
 <div class="container mt-2">
-    <div class="row mt-2">
-        <div class="col-6">
+    <div class="row row-cols-1 row-cols-md-2 mt-2">
+        <div class="col-md-4">
             <h2 class="text-secondary font-weight-bold"><i class="fas fa-users mr-2"></i>Users</h2>
         </div>
-        <div class="col-6 text-right">
+        <div class="col-md-8 text-md-right mb-2">
             <div class="btn-group">
                 <div class="form-inline">
-                    <input #inputkeyWord type="text" id="inputkeyWordField" placeholder="Search users..." class="form-control mr-sm-2"
+                    <input #inputkeyWord type="text" id="inputkeyWordField" placeholder="Search users..." class="form-control mr-2"
                         (keyup.enter)="searchUsers(inputkeyWord.value)">
                 </div>
-                <button type="button" (click)="makeUserAddFormGroup()" class="btn btn-info mr-2" data-toggle="modal"
-                    data-target="#addUserModal" title="Add new User">
-                    <i class="fas fa-plus"></i> Add User
+                <button type="button" (click)="makeUserAddFormGroup()" class="btn btn-info mr-2" data-toggle="modal" data-target="#addUserModal" title="Add new User">
+                    <span class="d-none d-md-block"><i class="fas fa-plus"></i> Add User</span>
+                    <span class="d-md-none"><i class="fas fa-plus"></i></span>        
                 </button>
-            </div>
-            <div class="btn-group">
                 <button type="button" (click)="refresh()" class="btn btn-light" title="Refresh">
                     <i *ngIf="refreshing" class="fas fa-sync fa-spin"></i><i *ngIf="!refreshing"
                         class="fas fa-sync"></i>
@@ -23,51 +21,54 @@
             </div>
         </div>
     </div>
-    <table *ngIf="users?.length > 0" class="table">
-        <thead class="thead-dark">
-            <tr align="center">
-                <th style="width: 23%" class="align-middle">Name</th>
-                <th style="width: 23%" class="align-middle">Email</th>
-                <th style="width: 15%" class="align-middle">Roles</th>
-                <th style="width: 6%" class="align-middle">Enabled</th>
-                <th style="width: 11%" class="align-middle">Registered</th>
-                <th style="width: 13%" class="align-middle">Managed Departments</th>
-                <th style="width: 9%" class="align-middle">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let tempUser of users" align="center">
-                <!-- <td class="align-middle" ng-bind="textFromJSON" style="white-space:pre-line">{{ prepareUserName(tempUser.name) }}</td> -->
-                <td class="align-middle">{{ tempUser.name }}</td>
-                <td class="align-middle">{{ tempUser.email }}</td>
-                <td class="align-middle">
-                    <div *ngFor="let tempRole of tempUser.roles.sort()">
-                        {{ prepareRoleForShowing(tempRole) }}
-                    </div>
-                </td>
-                <td class="align-middle">
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" [checked]="tempUser.enabled" id="{{ tempUser.id }}-checkbox" (change)="changeUserStatus(tempUser, $event)"/>
-                        <label class="custom-control-label" for="{{ tempUser.id }}-checkbox"></label>
-                    </div>
-                </td>
-                <td class="align-middle">{{ tempUser.registered | date:'mediumDate' }}</td>
-                <td class="align-middle">
-                    <div *ngFor="let tempDepartment of sortUserDepartments(tempUser)">
-                        {{ tempDepartment.name }}
-                    </div>
-                </td>
-                <td class="align-middle">
-                    <button (click)="prepareUserEditFormGroup(tempUser)" class="btn btn-outline-info btn-sm"
-                        title="Update User" data-toggle="modal" data-target="#editUserModal">
-                        <i class="fa fa-pencil-alt" aria-hidden="true"></i>
-                    </button>
-                    <button (click)="deleteUser(tempUser.id, tempUser.name)" class="btn btn-outline-danger btn-sm ml-1"
-                        title="Delete User"><i class="fas fa-trash" aria-hidden="true"></i></button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table *ngIf="users?.length > 0" class="table">
+            <thead class="thead-dark">
+                <tr align="center">
+                    <th style="width: 23%" class="align-middle">Name</th>
+                    <th style="width: 23%" class="align-middle">Email</th>
+                    <th style="width: 15%" class="align-middle">Roles</th>
+                    <th style="width: 6%" class="align-middle">Enabled</th>
+                    <th style="width: 11%" class="align-middle">Registered</th>
+                    <th style="width: 13%" class="align-middle">Managed Departments</th>
+                    <th style="width: 9%" class="align-middle">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let tempUser of users" align="center">
+                    <!-- <td class="align-middle" ng-bind="textFromJSON" style="white-space:pre-line">{{ prepareUserName(tempUser.name) }}</td> -->
+                    <td class="align-middle text-nowrap">{{ tempUser.name }}</td>
+                    <td class="align-middle text-nowrap">{{ tempUser.email }}</td>
+                    <td class="align-middle text-nowrap">
+                        <div *ngFor="let tempRole of tempUser.roles.sort()">
+                            {{ prepareRoleForShowing(tempRole) }}
+                        </div>
+                    </td>
+                    <td class="align-middle text-nowrap">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" [checked]="tempUser.enabled" id="{{ tempUser.id }}-checkbox" (change)="changeUserStatus(tempUser, $event)"/>
+                            <label class="custom-control-label" for="{{ tempUser.id }}-checkbox"></label>
+                        </div>
+                    </td>
+                    <td class="align-middle text-nowrap">{{ tempUser.registered | date:'mediumDate' }}</td>
+                    <td class="align-middle text-nowrap">
+                        <div *ngFor="let tempDepartment of sortUserDepartments(tempUser)">
+                            {{ tempDepartment.name }}
+                        </div>
+                    </td>
+                    <td class="align-middle text-nowrap">
+                        <button (click)="prepareUserEditFormGroup(tempUser)" class="btn btn-outline-info btn-sm"
+                            title="Update User" data-toggle="modal" data-target="#editUserModal">
+                            <i class="fa fa-pencil-alt" aria-hidden="true"></i>
+                        </button>
+                        <button (click)="deleteUser(tempUser.id, tempUser.name)" class="btn btn-outline-danger btn-sm ml-1"
+                            title="Delete User"><i class="fas fa-trash" aria-hidden="true"></i></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+ 
 
     <!-- if users is empty then display a message -->
     <div *ngIf="users?.length == 0" class="container">

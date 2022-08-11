@@ -1,10 +1,10 @@
 <!-- Departments Table -->
 <div class="container mt-2">
-    <div class="row mt-2">
-        <div class="col-6">
+    <div class="row row-cols-1 row-cols-md-2 mt-2">
+        <div class="col-md-6">
             <h2 class="text-secondary font-weight-bold"><i class="fas fa-briefcase mr-2"></i>Departments</h2>
         </div>
-        <div class="col-6 text-right">
+        <div class="col-md-6 text-right mb-2">
             <div class="btn-group">
                 <button [hidden]="!isAdminOrPersonnelOfficer()" type="button" (click)="makeDepartmentAddFormGroup()" class="btn btn-info mr-2"
                     data-toggle="modal" data-target="#addDepartmentModal" title="Add new Department">
@@ -19,28 +19,31 @@
             </div>
         </div>
     </div>
-    <table *ngIf="departments?.length > 0" class="table">
-        <thead class="thead-dark">
-            <tr align="center">
-                <th>Name</th>
-                <th [hidden]="!isAdminOrPersonnelOfficer()">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let tempDepartment of departments" align="center">
-                <td class="align-middle">{{ tempDepartment.name }}</td>
-                <td class="align-middle" [hidden]="!isAdminOrPersonnelOfficer()">
-                    <button (click)="prepareDepartmentEditFormGroup(tempDepartment)" class="btn btn-outline-info btn-sm"
-                        title="Update Department" data-toggle="modal" data-target="#editDepartmentModal">
-                        <i class="fa fa-pencil-alt" aria-hidden="true"></i>
-                    </button>
-                    <button (click)="deleteDepartment(tempDepartment.id, tempDepartment.name)"
-                        class="btn btn-outline-danger btn-sm ml-1" title="Delete Department"><i class="fas fa-trash"
-                            aria-hidden="true"></i></button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+
+    <div class="table-responsive">
+        <table *ngIf="departments?.length > 0" class="table">
+            <thead class="thead-dark">
+                <tr align="center">
+                    <th class="align-middle">Name</th>
+                    <th class="align-middle" [hidden]="!isAdminOrPersonnelOfficer()">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let tempDepartment of departments" align="center">
+                    <td class="align-middle text-nowrap">{{ tempDepartment.name }}</td>
+                    <td class="align-middle text-nowrap" [hidden]="!isAdminOrPersonnelOfficer()">
+                        <button (click)="prepareDepartmentEditFormGroup(tempDepartment)" class="btn btn-outline-info btn-sm"
+                            title="Update Department" data-toggle="modal" data-target="#editDepartmentModal">
+                            <i class="fa fa-pencil-alt" aria-hidden="true"></i>
+                        </button>
+                        <button (click)="deleteDepartment(tempDepartment.id, tempDepartment.name)"
+                            class="btn btn-outline-danger btn-sm ml-1" title="Delete Department"><i class="fas fa-trash"
+                                aria-hidden="true"></i></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <!-- if departments is empty then display a message -->
     <div *ngIf="departments?.length == 0" class="container">
@@ -51,11 +54,11 @@
 
     <!-- Pagination Area -->
     <div class="footer-pagination">
-        <div class="row mt-3">
-            <div class="col-md-4"></div>
-            <div class="col-md-8">
+        <div class="row mt-3 mb-3">
+            <div class="col-xl-4"></div>
+            <div class="col-xl-8">
                 <div class="row">
-                    <div class="col-md-9" style="padding-left: 30%">
+                    <div id="paginationRow" class="col-md-9">
                         <ngb-pagination [(page)]="pageNumber" [pageSize]="pageSize" [collectionSize]="totalElements"
                             [maxSize]="5" [boundaryLinks]="false" (pageChange)="listDepartments()">
                         </ngb-pagination>

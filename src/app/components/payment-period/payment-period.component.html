@@ -1,10 +1,10 @@
 <!-- Payment Periods Table -->
 <div class="container mt-2">
-    <div class="row mt-2">
-        <div class="col-6">
+    <div class="row row-cols-1 row-cols-md-2 mt-2">
+        <div class="col-md-6">
             <h2 class="text-secondary font-weight-bold"><i class="far fa-calendar-alt mr-2"></i>Payment Periods</h2>
         </div>
-        <div class="col-6 text-right">
+        <div class="col-md-6 text-right mb-2">
             <div class="btn-group">
                 <button [hidden]="!isAdminOrEconomist()" type="button" (click)="makePaymentPeriodAddFormGroup()" class="btn btn-info mr-2"
                     data-toggle="modal" data-target="#addPaymentPeriodModal" title="Add new Payment Period">
@@ -19,30 +19,32 @@
             </div>
         </div>
     </div>
-    <table *ngIf="paymentPeriods?.length > 0" class="table">
-        <thead class="thead-dark">
-            <tr align="center">
-                <th>Period</th>
-                <th>Required Hours Worked</th>
-                <th [hidden]="!isAdminOrEconomist()">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let tempPaymentPeriod of paymentPeriods" align="center">
-                <td class="align-middle">{{ tempPaymentPeriod.period | date:'MMMM yyyy'}}</td>
-                <td class="align-middle">{{ tempPaymentPeriod.requiredHoursWorked }}</td>
-                <td class="align-middle" [hidden]="!isAdminOrEconomist()">
-                    <button (click)="preparePaymentPeriodEditFormGroup(tempPaymentPeriod)" class="btn btn-outline-info btn-sm"
-                        title="Update Payment Period" data-toggle="modal" data-target="#editPaymentPeriodModal">
-                        <i class="fa fa-pencil-alt" aria-hidden="true"></i>
-                    </button>
-                    <button (click)="deletePaymentPeriod(tempPaymentPeriod.id, tempPaymentPeriod.period)"
-                        class="btn btn-outline-danger btn-sm ml-1" title="Delete Payment Period"><i class="fas fa-trash"
-                            aria-hidden="true"></i></button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table *ngIf="paymentPeriods?.length > 0" class="table">
+            <thead class="thead-dark">
+                <tr align="center">
+                    <th class="align-middle">Period</th>
+                    <th class="align-middle">Required Hours Worked</th>
+                    <th class="align-middle" [hidden]="!isAdminOrEconomist()">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let tempPaymentPeriod of paymentPeriods" align="center">
+                    <td class="align-middle text-nowrap">{{ tempPaymentPeriod.period | date:'MMMM yyyy'}}</td>
+                    <td class="align-middle text-nowrap">{{ tempPaymentPeriod.requiredHoursWorked }}</td>
+                    <td class="align-middle text-nowrap" [hidden]="!isAdminOrEconomist()">
+                        <button (click)="preparePaymentPeriodEditFormGroup(tempPaymentPeriod)" class="btn btn-outline-info btn-sm"
+                            title="Update Payment Period" data-toggle="modal" data-target="#editPaymentPeriodModal">
+                            <i class="fa fa-pencil-alt" aria-hidden="true"></i>
+                        </button>
+                        <button (click)="deletePaymentPeriod(tempPaymentPeriod.id, tempPaymentPeriod.period)"
+                            class="btn btn-outline-danger btn-sm ml-1" title="Delete Payment Period"><i class="fas fa-trash"
+                                aria-hidden="true"></i></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <!-- if payment periods is empty then display a message -->
     <div *ngIf="paymentPeriods?.length == 0" class="container">
@@ -53,11 +55,11 @@
 
     <!-- Pagination Area -->
     <div class="footer-pagination">
-        <div class="row mt-3">
-            <div class="col-md-4"></div>
-            <div class="col-md-8">
+        <div class="row mt-3 mb-3">
+            <div class="col-xl-4"></div>
+            <div class="col-xl-8">
                 <div class="row">
-                    <div class="col-md-9" style="padding-left: 30%">
+                    <div id="paginationRow" class="col-md-9">
                         <ngb-pagination [(page)]="pageNumber" [pageSize]="pageSize" [collectionSize]="totalElements"
                             [maxSize]="5" [boundaryLinks]="false" (pageChange)="listPaymentPeriods()">
                         </ngb-pagination>

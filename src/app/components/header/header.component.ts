@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 
@@ -8,6 +8,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+  @ViewChild('navbarToggler') navbarToggler:ElementRef;
 
   constructor(private authenticationService: AuthenticationService, private router: Router) { }
 
@@ -40,5 +41,15 @@ export class HeaderComponent implements OnInit {
 
   routeToLogin(): void {
     this.router.navigate([`/login`]);
+  }
+
+  navBarTogglerIsVisible() {
+    return this.navbarToggler.nativeElement.offsetParent !== null;
+  }
+
+  collapseNav() {
+    if (this.navBarTogglerIsVisible()) {
+      this.navbarToggler.nativeElement.click();
+    }
   }
 }

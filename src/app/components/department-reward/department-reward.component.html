@@ -1,13 +1,10 @@
 <!-- Department Rewards Table -->
 <div class="container mt-2">
-    <div class="row mt-2">
-        <div class="col-4">
+    <div class="row row-cols-2 row-cols-md-3 mt-2">
+        <div class="col-12 col-md-6 col-xl-4">
             <h2 class="text-secondary font-weight-bold"><i class="fas fa-money-bill-alt mr-2"></i>Departm. Rew-s</h2>
         </div>
-        <div class="col-1">
-
-        </div>
-        <div class="col-2">
+        <div class="col-6 pr-xl-5 pl-xl-5 col-md-3 col-xl-4">
             <select *ngIf="selectedDepartment == null" class="custom-select" (change)="listDepartmentRewards()">
                 <option value="" selected disabled hidden>Select Department</option>
                 <option *ngFor="let department of departments" [ngValue]="department">
@@ -20,14 +17,12 @@
                 </option>
             </select>
         </div>
-        <div class="col-1">
-
-        </div>
-        <div class="col-4 text-right">
+        <div class="col col-md-3 col-xl-4 text-right mb-2">
             <div class="btn-group">
                 <button [hidden]="!isAdminOrEconomist()" type="button" (click)="makeDepartmentRewardAddFormGroup()" class="btn btn-info mr-2" data-toggle="modal"
                     data-target="#addDepartmentRewardModal" title="Add new Department Reward">
-                    <i class="fas fa-plus"></i> Add Department Reward
+                    <span class="d-none d-xl-block"><i class="fas fa-plus"></i> Add Department Reward</span>
+                    <span class="d-xl-none"><i class="fas fa-plus"></i>Add</span>        
                 </button>
             </div>
             <div class="btn-group">
@@ -38,33 +33,36 @@
             </div>
         </div>
     </div>
-    <table *ngIf="departmentRewards?.length > 0" class="table">
-        <thead class="thead-dark">
-            <tr align="center">
-                <th>Payment Period</th>
-                <th>Allocated Amount</th>
-                <th>Distributed Amount</th>
-                <th [hidden]="!isAdminOrEconomist()">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let tempDepartmentReward of departmentRewards" align="center">
-                <td class="align-middle">{{ tempDepartmentReward.paymentPeriod.period | date:'MMMM yyyy' }}</td>
-                <td class="align-middle">{{ tempDepartmentReward.allocatedAmount }} ₽</td>
-                <td class="align-middle">{{ tempDepartmentReward.distributedAmount }} ₽</td>
-                <td class="align-middle" [hidden]="!isAdminOrEconomist()">
-                    <button (click)="prepareDepartmentRewardEditFormGroup(tempDepartmentReward)" class="btn btn-outline-info btn-sm"
-                        title="Update Department Reward" data-toggle="modal" data-target="#editDepartmentRewardModal">
-                        <i class="fa fa-pencil-alt" aria-hidden="true"></i>
-                    </button>
-                    <button (click)="deleteDepartmentReward(tempDepartmentReward.id, tempDepartmentReward.paymentPeriod.period)"
-                        class="btn btn-outline-danger btn-sm ml-1" title="Delete Department Reward"><i class="fas fa-trash"
-                            aria-hidden="true"></i></button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
 
+    <div class="table-responsive">
+        <table *ngIf="departmentRewards?.length > 0" class="table">
+            <thead class="thead-dark">
+                <tr align="center">
+                    <th class="align-middle">Payment Period</th>
+                    <th class="align-middle">Allocated Amount</th>
+                    <th class="align-middle">Distributed Amount</th>
+                    <th class="align-middle" [hidden]="!isAdminOrEconomist()">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let tempDepartmentReward of departmentRewards" align="center">
+                    <td class="align-middle text-nowrap">{{ tempDepartmentReward.paymentPeriod.period | date:'MMMM yyyy' }}</td>
+                    <td class="align-middle text-nowrap">{{ tempDepartmentReward.allocatedAmount }} ₽</td>
+                    <td class="align-middle text-nowrap">{{ tempDepartmentReward.distributedAmount }} ₽</td>
+                    <td class="align-middle text-nowrap" [hidden]="!isAdminOrEconomist()">
+                        <button (click)="prepareDepartmentRewardEditFormGroup(tempDepartmentReward)" class="btn btn-outline-info btn-sm"
+                            title="Update Department Reward" data-toggle="modal" data-target="#editDepartmentRewardModal">
+                            <i class="fa fa-pencil-alt" aria-hidden="true"></i>
+                        </button>
+                        <button (click)="deleteDepartmentReward(tempDepartmentReward.id, tempDepartmentReward.paymentPeriod.period)"
+                            class="btn btn-outline-danger btn-sm ml-1" title="Delete Department Reward"><i class="fas fa-trash"
+                                aria-hidden="true"></i></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
     <!-- if departmentRewards is empty then display a message -->
     <div *ngIf="departmentRewards?.length == 0" class="container">
         <div class="row">
@@ -74,11 +72,11 @@
 
     <!-- Pagination Area -->
     <div class="footer-pagination">
-        <div class="row mt-3">
-            <div class="col-md-4"></div>
-            <div class="col-md-8">
+        <div class="row mt-3 mb-3">
+            <div class="col-xl-4"></div>
+            <div class="col-xl-8">
                 <div class="row">
-                    <div class="col-md-9" style="padding-left: 30%">
+                    <div id="paginationRow" class="col-md-9">
                         <ngb-pagination [(page)]="pageNumber" [pageSize]="pageSize" [collectionSize]="totalElements"
                             [maxSize]="5" [boundaryLinks]="false" (pageChange)="listDepartmentRewards()">
                         </ngb-pagination>
