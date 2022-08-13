@@ -68,7 +68,9 @@ const routes: Routes = [
     EmployeeRewardComponent
   ],
   imports: [
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(routes, {
+      scrollPositionRestoration: 'enabled'
+    }),
     BrowserModule,
     HttpClientModule,
     ReactiveFormsModule,
