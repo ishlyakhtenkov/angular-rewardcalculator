@@ -24,34 +24,44 @@
 						<i class="far fa-calendar-alt"></i> Payment Periods
 					</a>
 				</li>
-				<li [hidden]="!isUserLoggedIn()" class="btn-group">
-					<a class="nav-link dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true">
+				<li [hidden]="!isUserLoggedIn()" class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
 						<i class="fab fa-fort-awesome"></i> Organization
 					</a>
-					<div class="dropdown-menu">
-						<a [hidden]="!isAdminOrPersonnelOfficerOrEconomist()" class="dropdown-item" routerLink="/departments" (click)="collapseNav()">
-							<i class="fas fa-briefcase"></i> Departments
-						</a>
-						<a class="dropdown-item" routerLink="/positions" (click)="collapseNav()">
-							<i class="fas fa-chess"></i> Positions
-						</a>
-						<a class="dropdown-item" routerLink="/employees" (click)="collapseNav()">
-							<i class="fas fa-user-tie"></i> Employees
-						</a>
-					</div>
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<li>
+							<a [hidden]="!isAdminOrPersonnelOfficerOrEconomist()" class="dropdown-item" routerLink="/departments" (click)="collapseNav()">
+								<i class="fas fa-briefcase"></i> Departments
+							</a>
+						</li>
+						<li>
+							<a class="dropdown-item" routerLink="/positions" (click)="collapseNav()">
+								<i class="fas fa-chess"></i> Positions
+							</a>
+						</li>
+						<li>
+							<a class="dropdown-item" routerLink="/employees" (click)="collapseNav()">
+								<i class="fas fa-user-tie"></i> Employees
+							</a>
+						</li>
+					</ul>
 				</li>
-				<li [hidden]="!isAdminOrEconomistOrDepartmentHead()" class="btn-group">
-					<a class="nav-link dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true">
+				<li [hidden]="!isAdminOrEconomistOrDepartmentHead()" class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
 						<i class="fas fa-dollar-sign"></i> Rewards
 					</a>
-					<div class="dropdown-menu">
-						<a [hidden]="!isAdminOrEconomistOrDepartmentHead()" class="dropdown-item" routerLink="/departmentrewards" (click)="collapseNav()">
-							<i class="fas fa-money-bill-alt"></i> Department Rewards
-						</a>
-						<a [hidden]="!isAdminOrDepartmentHead()" class="dropdown-item" routerLink="/employeerewards" (click)="collapseNav()">
-							<i class="fas fa-coins"></i> Employee Rewards
-						</a>
-					</div>
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<li>
+							<a [hidden]="!isAdminOrEconomistOrDepartmentHead()" class="dropdown-item" routerLink="/departmentrewards" (click)="collapseNav()">
+								<i class="fas fa-money-bill-alt"></i> Department Rewards
+							</a>
+						</li>
+						<li>
+							<a [hidden]="!isAdminOrDepartmentHead()" class="dropdown-item" routerLink="/employeerewards" (click)="collapseNav()">
+								<i class="fas fa-coins"></i> Employee Rewards
+							</a>
+						</li>
+					</ul>
 				</li>
 				<li class="nav-item d-xl-none">
                     <a *ngIf="isUserLoggedIn()" class="nav-link" routerLink="/profile" (click)="collapseNav()">
